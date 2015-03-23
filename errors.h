@@ -45,6 +45,7 @@ class Operator;
  * as an argument. You cannot pass NULL for these arguments.
  */
 
+extern bool mainDefined;
 
 typedef enum {LookingForType, LookingForClass, LookingForInterface, LookingForVariable, LookingForFunction} reasonT;
 

@@ -6,7 +6,7 @@
 #include "ast_type.h"
 #include "ast_decl.h"
 #include "ast_expr.h"
-
+#include "errors.h"
 
 Program::Program(List<Decl*> *d) {
     Assert(d != NULL);
@@ -27,6 +27,10 @@ void Program::Emit() {
      *      which makes for a great use of inheritance and
      *      polymorphism in the node classes.
      */
+        if (!mainDefined)
+        {
+                ReportError::NoMainFound();
+        }
 }
 
 StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {

@@ -10,6 +10,8 @@
 #include "errors.h"
 #include "parser.h"
 
+bool mainDefined = false;
+
 void SysCallCodeGen();
 
 

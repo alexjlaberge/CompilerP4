@@ -5,7 +5,8 @@
 #include "ast_decl.h"
 #include "ast_type.h"
 #include "ast_stmt.h"
-  
+#include "errors.h"
+#include <cstring>
 #include <set>
          
 Decl::Decl(Identifier *n) : Node(*n->GetLocation()) {
@@ -41,6 +42,10 @@ FnDecl::FnDecl(Identifier *n, Type *r, List<VarDecl*> *d) : Decl(n) {
     (returnType=r)->SetParent(this);
     (formals=d)->SetParentAll(this);
     body = NULL;
+    if (strcmp(n->GetName(), "main") == 0)
+    {
+            mainDefined = true;
+    }
 }
 
 void FnDecl::SetFunctionBody(Stmt *b) { 

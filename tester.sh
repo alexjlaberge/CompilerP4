@@ -1,13 +1,14 @@
 #!/bin/bash
 
 INFILES=`ls samples/*.decaf | sed -e 's/\.decaf//'`
+CURRENT_OUTPUT="/tmp/eecs483p4.out"
 
 function spim_run() {
         if [ -f ${1}.in ]
         then
-                solution/spim -file ${1}.s < ${1}.in > ${1}.out
+                solution/spim -file ${1}.s < ${1}.in > ${1}.out 2> /dev/null
         else
-                solution/spim -file ${1}.s > ${1}.out
+                solution/spim -file ${1}.s > ${1}.out 2> /dev/null
         fi
 }
 
@@ -18,15 +19,14 @@ do
         echo -ne "Testing ${input}..."
 
         # First, test ours and get the output in memory
-        #./dcc < ${input}.decaf > ${input}.s
-        #spim_run ${input}
-        #CURRENT_OUTPUT=`cat ${input}.out`
-        CURRENT_OUTPUT=""
+        ./dcc < ${input}.decaf > ${input}.s 2> /dev/null
+        spim_run ${input}
+        cp ${input}.out ${CURRENT_OUTPUT}
 
-        ./solution/dcc < ${input}.decaf > ${input}.s
+        ./solution/dcc < ${input}.decaf > ${input}.s 2> /dev/null
         spim_run ${input}
 
-        echo ${CURRENT_OUTPUT} | diff -aq ${input}.out - && echo "PASS"
+        diff -aq ${input}.out ${CURRENT_OUTPUT} && echo "PASS"
         if [ ! "$?" -eq 0 ]
         then
                 FAILED="${FAILED} ${input}"
@@ -34,7 +34,7 @@ do
 
         if [ "samples/${1}" == ${input} ]
         then
-                echo ${CURRENT_OUTPUT} | diff -a ${input}.out -
+                diff -a ${input}.out ${CURRENT_OUTPUT}
                 exit 1
         fi
 done
