@@ -1,27 +1,41 @@
 #!/bin/bash
-# Proper header for a Bash script.
+
+INFILES=`ls samples/*.decaf | sed -e 's/\.decaf//'`
+
+function spim_run() {
+        if [ -f ${1}.in ]
+        then
+                solution/spim -file ${1}.s < ${1}.in > ${1}.out
+        else
+                solution/spim -file ${1}.s > ${1}.out
+        fi
+}
 
 make
 
-if [ ! -z ${1} ]
-then
-        input="samples/${1}.decaf"
-        ./dcc < ${input} 2>&1 | diff -a \
-                `echo ${input} | sed -e "s/\..*/\.out/"` -
-        exit 0
-fi
-
-FAILED=""
-
-for input in `ls samples/*.decaf`
+for input in ${INFILES}
 do
         echo -ne "Testing ${input}..."
-        ./solution/dcc < ${input} 2>&1 &> `echo ${input} | sed -e "s/\..*/\.out/"`
-        ./dcc < ${input} 2>&1 | diff -aq \
-                `echo ${input} | sed -e "s/\..*/\.out/"` - && echo "PASS"
+
+        # First, test ours and get the output in memory
+        #./dcc < ${input}.decaf > ${input}.s
+        #spim_run ${input}
+        #CURRENT_OUTPUT=`cat ${input}.out`
+        CURRENT_OUTPUT=""
+
+        ./solution/dcc < ${input}.decaf > ${input}.s
+        spim_run ${input}
+
+        echo ${CURRENT_OUTPUT} | diff -aq ${input}.out - && echo "PASS"
         if [ ! "$?" -eq 0 ]
         then
                 FAILED="${FAILED} ${input}"
+        fi
+
+        if [ "samples/${1}" == ${input} ]
+        then
+                echo ${CURRENT_OUTPUT} | diff -a ${input}.out -
+                exit 1
         fi
 done
 
