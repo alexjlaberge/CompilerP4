@@ -1,4 +1,4 @@
-Loaded: /usr/share/spim/exceptions.s
+Loaded: /afs/umich.edu/user/c/h/chhsiao/Public/spim-install/exceptions.s
 
 This program will read in a bunch of numbers and print them
 back out in sorted order.

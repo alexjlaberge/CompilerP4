@@ -1,4 +1,4 @@
-Loaded: /usr/share/spim/exceptions.s
-The following symbols are undefined:
-main
+
+*** Error.
+*** Linker: function 'main' not defined
 
