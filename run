@@ -6,7 +6,7 @@
 # Compiles decaf-file and executes (spim).
 #
 
-SPIM=/afs/umich.edu/user/c/h/chhsiao/Public/spim
+SPIM=spim
 COMPILER=dcc
 
 if [ $# -lt 1 ]; then
