@@ -116,3 +116,38 @@ void FieldAccess::Emit() {
 void LValue::Emit() {
         /* TODO */
 }
+
+void AssignExpr::Emit() {
+        /* TODO */
+}
+
+void LogicalExpr::Emit() {
+        /* TODO */
+}
+
+void EqualityExpr::Emit() {
+        /* TODO */
+}
+
+void RelationalExpr::Emit() {
+        /* TODO */
+}
+
+void ArithmeticExpr::Emit() {
+        /* TODO */
+}
+
+void EmptyExpr::Emit() {
+}
+
+void ReadLineExpr::Emit() {
+        /* TODO */
+}
+
+void ReadIntegerExpr::Emit() {
+        /* TODO */
+}
+
+void NullConstant::Emit() {
+        /* TODO */
+}
