@@ -19,6 +19,7 @@ void Program::Check() {
      * semantically-invalid programs.
      */
 }
+
 void Program::Emit() {
     /* pp4: here is where the code generation is kicked off.
      *      The general idea is perform a tree traversal of the
@@ -61,15 +62,40 @@ IfStmt::IfStmt(Expr *t, Stmt *tb, Stmt *eb): ConditionalStmt(t, tb) {
     if (elseBody) elseBody->SetParent(this);
 }
 
-
 ReturnStmt::ReturnStmt(yyltype loc, Expr *e) : Stmt(loc) { 
     Assert(e != NULL);
     (expr=e)->SetParent(this);
 }
-  
+
 PrintStmt::PrintStmt(List<Expr*> *a) {    
     Assert(a != NULL);
     (args=a)->SetParentAll(this);
 }
 
+void StmtBlock::Emit() {
+        /* TODO */
+}
 
+void IfStmt::Emit() {
+        /* TODO */
+}
+
+void ForStmt::Emit() {
+        /* TODO */
+}
+
+void WhileStmt::Emit() {
+        /* TODO */
+}
+
+void PrintStmt::Emit() {
+        /* TODO */
+}
+
+void ReturnStmt::Emit() {
+        /* TODO */
+}
+
+void BreakStmt::Emit() {
+        /* TODO */
+}

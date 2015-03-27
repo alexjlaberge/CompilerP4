@@ -44,6 +44,7 @@ class Node
     Node(yyltype loc);
     Node();
     
+    virtual void Emit() {}
     yyltype *GetLocation()   { return location; }
     void SetParent(Node *p)  { parent = p; }
     Node *GetParent()        { return parent; }

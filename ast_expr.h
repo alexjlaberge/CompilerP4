@@ -34,66 +34,72 @@ class Expr : public Stmt
 class EmptyExpr : public Expr
 {
   public:
+          void Emit();
 };
 
 class IntConstant : public Expr 
 {
   protected:
     int value;
-  
+
   public:
     IntConstant(yyltype loc, int val);
+    void Emit();
 };
 
 class DoubleConstant : public Expr 
 {
   protected:
     double value;
-    
+
   public:
     DoubleConstant(yyltype loc, double val);
+    void Emit();
 };
 
 class BoolConstant : public Expr 
 {
   protected:
     bool value;
-    
+
   public:
     BoolConstant(yyltype loc, bool val);
+    void Emit();
 };
 
 class StringConstant : public Expr 
 { 
   protected:
     char *value;
-    
+
   public:
     StringConstant(yyltype loc, const char *val);
+    void Emit();
 };
 
 class NullConstant: public Expr 
 {
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
+    void Emit();
 };
 
 class Operator : public Node 
 {
   protected:
     char tokenString[4];
-    
+
   public:
     Operator(yyltype loc, const char *tok);
     friend std::ostream& operator<<(std::ostream& out, Operator *o) { return out << o->tokenString; }
  };
- 
+
 class CompoundExpr : public Expr
 {
   protected:
     Operator *op;
     Expr *left, *right; // left will be NULL if unary
-    
+
   public:
     CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
@@ -104,12 +110,14 @@ class ArithmeticExpr : public CompoundExpr
   public:
     ArithmeticExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     ArithmeticExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
+    void Emit();
 };
 
 class RelationalExpr : public CompoundExpr 
 {
   public:
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
+    void Emit();
 };
 
 class EqualityExpr : public CompoundExpr 
@@ -117,6 +125,7 @@ class EqualityExpr : public CompoundExpr
   public:
     EqualityExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "EqualityExpr"; }
+    void Emit();
 };
 
 class LogicalExpr : public CompoundExpr 
@@ -125,6 +134,7 @@ class LogicalExpr : public CompoundExpr
     LogicalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     LogicalExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
     const char *GetPrintNameForNode() { return "LogicalExpr"; }
+    void Emit();
 };
 
 class AssignExpr : public CompoundExpr 
@@ -132,12 +142,14 @@ class AssignExpr : public CompoundExpr
   public:
     AssignExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "AssignExpr"; }
+    void Emit();
 };
 
 class LValue : public Expr 
 {
   public:
     LValue(yyltype loc) : Expr(loc) {}
+    void Emit();
 };
 
 class This : public Expr 
@@ -150,9 +162,10 @@ class ArrayAccess : public LValue
 {
   protected:
     Expr *base, *subscript;
-    
+
   public:
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
+    void Emit();
 };
 
 /* Note that field access is used both for qualified names
@@ -165,9 +178,10 @@ class FieldAccess : public LValue
   protected:
     Expr *base;	// will be NULL if no explicit base
     Identifier *field;
-    
+
   public:
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
+    void Emit();
 };
 
 /* Like field access, call is used both for qualified base.field()
@@ -180,18 +194,20 @@ class Call : public Expr
     Expr *base;	// will be NULL if no explicit base
     Identifier *field;
     List<Expr*> *actuals;
-    
+
   public:
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
+    void Emit();
 };
 
 class NewExpr : public Expr
 {
   protected:
     NamedType *cType;
-    
+
   public:
     NewExpr(yyltype loc, NamedType *clsType);
+    void Emit();
 };
 
 class NewArrayExpr : public Expr
@@ -199,22 +215,24 @@ class NewArrayExpr : public Expr
   protected:
     Expr *size;
     Type *elemType;
-    
+
   public:
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);
+    void Emit();
 };
 
 class ReadIntegerExpr : public Expr
 {
   public:
     ReadIntegerExpr(yyltype loc) : Expr(loc) {}
+    void Emit();
 };
 
 class ReadLineExpr : public Expr
 {
   public:
     ReadLineExpr(yyltype loc) : Expr (loc) {}
+    void Emit();
 };
 
-    
 #endif

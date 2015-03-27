@@ -36,6 +36,7 @@ class VarDecl : public Decl
     
   public:
     VarDecl(Identifier *name, Type *type);
+    virtual void Emit();
 };
 
 class ClassDecl : public Decl 
@@ -48,6 +49,7 @@ class ClassDecl : public Decl
   public:
     ClassDecl(Identifier *name, NamedType *extends, 
               List<NamedType*> *implements, List<Decl*> *members);
+    virtual void Emit();
 };
 
 class InterfaceDecl : public Decl 
@@ -57,6 +59,7 @@ class InterfaceDecl : public Decl
     
   public:
     InterfaceDecl(Identifier *name, List<Decl*> *members);
+    virtual void Emit();
 };
 
 class FnDecl : public Decl 
@@ -69,6 +72,7 @@ class FnDecl : public Decl
   public:
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
+    virtual void Emit();
 };
 
 #endif

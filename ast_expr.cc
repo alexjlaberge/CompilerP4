@@ -7,7 +7,6 @@
 #include "ast_decl.h"
 #include <string.h>
 
-
 IntConstant::IntConstant(yyltype loc, int val) : Expr(loc) {
     value = val;
 }
@@ -29,6 +28,7 @@ Operator::Operator(yyltype loc, const char *tok) : Node(loc) {
     Assert(tok != NULL);
     strncpy(tokenString, tok, sizeof(tokenString));
 }
+
 CompoundExpr::CompoundExpr(Expr *l, Operator *o, Expr *r) 
   : Expr(Join(l->GetLocation(), r->GetLocation())) {
     Assert(l != NULL && o != NULL && r != NULL);
@@ -44,13 +44,12 @@ CompoundExpr::CompoundExpr(Operator *o, Expr *r)
     (op=o)->SetParent(this);
     (right=r)->SetParent(this);
 }
-   
-  
+
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (base=b)->SetParent(this); 
     (subscript=s)->SetParent(this);
 }
-     
+
 FieldAccess::FieldAccess(Expr *b, Identifier *f) 
   : LValue(b? Join(b->GetLocation(), f->GetLocation()) : *f->GetLocation()) {
     Assert(f != NULL); // b can be be NULL (just means no explicit base)
@@ -59,7 +58,6 @@ FieldAccess::FieldAccess(Expr *b, Identifier *f)
     (field=f)->SetParent(this);
 }
 
-
 Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
     Assert(f != NULL && a != NULL); // b can be be NULL (just means no explicit base)
     base = b;
@@ -67,13 +65,11 @@ Call::Call(yyltype loc, Expr *b, Identifier *f, List<Expr*> *a) : Expr(loc)  {
     (field=f)->SetParent(this);
     (actuals=a)->SetParentAll(this);
 }
- 
 
 NewExpr::NewExpr(yyltype loc, NamedType *c) : Expr(loc) { 
   Assert(c != NULL);
   (cType=c)->SetParent(this);
 }
-
 
 NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
     Assert(sz != NULL && et != NULL);
@@ -81,4 +77,42 @@ NewArrayExpr::NewArrayExpr(yyltype loc, Expr *sz, Type *et) : Expr(loc) {
     (elemType=et)->SetParent(this);
 }
 
-       
+void IntConstant::Emit() {
+        /* TODO */
+}
+
+void DoubleConstant::Emit() {
+        /* TODO */
+}
+
+void BoolConstant::Emit() {
+        /* TODO */
+}
+
+void StringConstant::Emit() {
+        /* TODO */
+}
+
+void ArrayAccess::Emit() {
+        /* TODO */
+}
+
+void NewExpr::Emit() {
+        /* TODO */
+}
+
+void NewArrayExpr::Emit() {
+        /* TODO */
+}
+
+void Call::Emit() {
+        /* TODO */
+}
+
+void FieldAccess::Emit() {
+        /* TODO */
+}
+
+void LValue::Emit() {
+        /* TODO */
+}

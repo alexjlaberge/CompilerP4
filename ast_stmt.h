@@ -19,16 +19,16 @@
 class Decl;
 class VarDecl;
 class Expr;
-  
+
 class Program : public Node
 {
   protected:
      List<Decl*> *decls;
-     
+
   public:
      Program(List<Decl*> *declList);
      void Check();
-     void Emit();
+     virtual void Emit();
 };
 
 class Stmt : public Node
@@ -43,18 +43,19 @@ class StmtBlock : public Stmt
   protected:
     List<VarDecl*> *decls;
     List<Stmt*> *stmts;
-    
+
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
+    virtual void Emit();
 };
 
-  
+
 class ConditionalStmt : public Stmt
 {
   protected:
     Expr *test;
     Stmt *body;
-  
+
   public:
     ConditionalStmt(Expr *testExpr, Stmt *body);
 };
@@ -70,49 +71,54 @@ class ForStmt : public LoopStmt
 {
   protected:
     Expr *init, *step;
-  
+
   public:
     ForStmt(Expr *init, Expr *test, Expr *step, Stmt *body);
+    virtual void Emit();
 };
 
 class WhileStmt : public LoopStmt 
 {
   public:
     WhileStmt(Expr *test, Stmt *body) : LoopStmt(test, body) {}
+    virtual void Emit();
 };
 
 class IfStmt : public ConditionalStmt 
 {
   protected:
     Stmt *elseBody;
-  
+
   public:
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
+    virtual void Emit();
 };
 
 class BreakStmt : public Stmt 
 {
   public:
     BreakStmt(yyltype loc) : Stmt(loc) {}
+    virtual void Emit();
 };
 
 class ReturnStmt : public Stmt  
 {
   protected:
     Expr *expr;
-  
+
   public:
     ReturnStmt(yyltype loc, Expr *expr);
+    virtual void Emit();
 };
 
 class PrintStmt : public Stmt
 {
   protected:
     List<Expr*> *args;
-    
+
   public:
     PrintStmt(List<Expr*> *arguments);
+    virtual void Emit();
 };
-
 
 #endif

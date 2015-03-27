@@ -52,5 +52,18 @@ void FnDecl::SetFunctionBody(Stmt *b) {
     (body=b)->SetParent(this);
 }
 
+void VarDecl::Emit() {
+        /* TODO */
+}
 
+void ClassDecl::Emit() {
+        /* TODO */
+}
 
+void FnDecl::Emit() {
+        /* TODO */
+}
+
+void InterfaceDecl::Emit() {
+        /* TODO */
+}
