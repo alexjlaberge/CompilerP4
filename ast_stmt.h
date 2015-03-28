@@ -36,6 +36,7 @@ class Stmt : public Node
   public:
      Stmt() : Node() {}
      Stmt(yyltype loc) : Node(loc) {}
+     virtual size_t localSpaceRequired();
 };
 
 class StmtBlock : public Stmt 
@@ -47,6 +48,7 @@ class StmtBlock : public Stmt
   public:
     StmtBlock(List<VarDecl*> *variableDeclarations, List<Stmt*> *statements);
     virtual void Emit();
+    virtual size_t localSpaceRequired();
 };
 
 

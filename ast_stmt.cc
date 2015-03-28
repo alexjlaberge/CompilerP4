@@ -7,6 +7,7 @@
 #include "ast_decl.h"
 #include "ast_expr.h"
 #include "errors.h"
+#include <cassert>
 
 Program::Program(List<Decl*> *d) {
     Assert(d != NULL);
@@ -98,4 +99,20 @@ void ReturnStmt::Emit() {
 
 void BreakStmt::Emit() {
         /* TODO */
+}
+
+size_t Stmt::localSpaceRequired() {
+        /* This should never be called */
+        assert(0);
+        return 0;
+}
+
+size_t StmtBlock::localSpaceRequired() {
+        size_t bytes = 0;
+
+        for (int i = 0; i < decls->NumElements(); i++) {
+                bytes += decls->Nth(i)->getSize();
+        }
+
+        return bytes;
 }

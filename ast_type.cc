@@ -5,6 +5,7 @@
 #include "ast_type.h"
 #include "ast_decl.h"
 #include <string.h>
+#include <cassert>
  
 /* Class constants
  * ---------------
@@ -27,18 +28,33 @@ Type::Type(const char *n) {
     typeName = strdup(n);
 }
 
-
-
-	
 NamedType::NamedType(Identifier *i) : Type(*i->GetLocation()) {
     Assert(i != NULL);
     (id=i)->SetParent(this);
 } 
-
 
 ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
     Assert(et != NULL);
     (elemType=et)->SetParent(this);
 }
 
+size_t Type::getSize() {
+        if (strcmp(typeName, "int") == 0) {
+                return 4;
+        } else if (strcmp(typeName, "double") == 0) {
+                return 8;
+        } else if (strcmp(typeName, "bool") == 0) {
+                return 1;
+        } else if (strcmp(typeName, "string") == 0) {
+                return 4;
+        }
+        assert(0);
+}
 
+size_t NamedType::getSize() {
+        return 4;
+}
+
+size_t ArrayType::getSize() {
+        return 4;
+}

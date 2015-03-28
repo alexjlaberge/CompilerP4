@@ -37,6 +37,7 @@ class VarDecl : public Decl
   public:
     VarDecl(Identifier *name, Type *type);
     virtual void Emit();
+    size_t getSize();
 };
 
 class ClassDecl : public Decl 
