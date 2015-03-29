@@ -166,4 +166,6 @@ class CodeGenerator {
     void DoFinalCodeGen();
 };
 
+extern CodeGenerator codegen;
+
 #endif

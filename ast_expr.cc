@@ -103,6 +103,16 @@ void NewExpr::Emit() {
 
 void NewArrayExpr::Emit() {
         /* TODO */
+
+        /**
+         * 1. Compute size
+         * 2. If size < 1, runtime error
+         * 3. Call builtin Alloc
+         */
+
+        //Location *size_loc = ;
+        //Location *arr = codegen.GenBuiltInCall(Alloc, Location *arg1 = NULL, Location *arg2 = NULL);
+        //codegen.GenAssign(ptr, arr)
 }
 
 void Call::Emit() {

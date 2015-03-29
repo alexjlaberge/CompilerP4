@@ -8,6 +8,10 @@
 #include "ast_expr.h"
 #include "errors.h"
 #include <cassert>
+#include <iostream>
+#include "codegen.h"
+
+using namespace std;
 
 Program::Program(List<Decl*> *d) {
     Assert(d != NULL);
@@ -37,6 +41,8 @@ void Program::Emit() {
         {
             decls->Nth(i)->Emit();
         }
+
+        codegen.DoFinalCodeGen();
 }
 
 StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {

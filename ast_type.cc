@@ -39,16 +39,7 @@ ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
 }
 
 size_t Type::getSize() {
-        if (strcmp(typeName, "int") == 0) {
-                return 4;
-        } else if (strcmp(typeName, "double") == 0) {
-                return 8;
-        } else if (strcmp(typeName, "bool") == 0) {
-                return 1;
-        } else if (strcmp(typeName, "string") == 0) {
-                return 4;
-        }
-        assert(0);
+        return 4;
 }
 
 size_t NamedType::getSize() {

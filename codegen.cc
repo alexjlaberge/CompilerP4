@@ -9,6 +9,8 @@
 #include <string.h>
 #include "tac.h"
 #include "mips.h"
+
+CodeGenerator codegen;
   
 CodeGenerator::CodeGenerator()
 {

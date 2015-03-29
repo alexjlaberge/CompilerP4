@@ -6,7 +6,7 @@
 #include "ast_type.h"
 #include "ast_stmt.h"
 #include "errors.h"
-#include "tac.h"
+#include "codegen.h"
 #include <cstring>
 #include <set>
 
@@ -60,10 +60,14 @@ void ClassDecl::Emit() {
 }
 
 void FnDecl::Emit() {
-        /* TODO */
-        BeginFunc func;
+        codegen.GenLabel(id->GetName());
 
-        func.SetFrameSize(body->localSpaceRequired());
+        BeginFunc *func = codegen.GenBeginFunc();
+        func->SetFrameSize(body->localSpaceRequired());
+
+        body->Emit();
+
+        codegen.GenEndFunc();
 }
 
 void InterfaceDecl::Emit() {
