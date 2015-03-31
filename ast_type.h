@@ -4,9 +4,6 @@
  * store type information. The base Type class is used
  * for built-in types, the NamedType for classes and interfaces,
  * and the ArrayType for arrays of other types.  
- *
- * pp4: You will need to extend the Type classes to implement
- * code generation for types.
  */
  
 #ifndef _H_ast_type
@@ -32,7 +29,12 @@ class Type : public Node
     virtual void PrintToStream(std::ostream& out) { out << typeName; }
     friend std::ostream& operator<<(std::ostream& out, Type *t) { t->PrintToStream(out); return out; }
     virtual bool IsEquivalentTo(Type *other) { return this == other; }
-
+    virtual bool IsArrayType() { return false; }
+    virtual bool IsNamedType() { return false; }
+    virtual bool IsCompatibleWith(Type *other);
+    virtual bool IsNumeric() { return this == Type::intType || this == Type::doubleType; }
+    virtual bool IsError() { return false;}
+    virtual Type *LesserType(Type *other);
     virtual size_t getSize();
 };
 
@@ -40,11 +42,23 @@ class NamedType : public Type
 {
   protected:
     Identifier *id;
+    Decl *declForType; // either class or inteface
+    bool isError;
     
   public:
     NamedType(Identifier *i);
     
     void PrintToStream(std::ostream& out) { out << id; }
+    void Check();
+    Decl *GetDeclForType();
+    void SetDeclForType(Decl *decl);
+    bool IsInterface();
+    bool IsClass();
+    Identifier *GetId() { return id; }
+    bool IsEquivalentTo(Type *other);
+    bool IsNamedType() { return true; }
+    bool IsCompatibleWith(Type *other);
+    bool IsError() { return isError;}
     virtual size_t getSize();
 };
 
@@ -57,6 +71,11 @@ class ArrayType : public Type
     ArrayType(yyltype loc, Type *elemType);
     
     void PrintToStream(std::ostream& out) { out << elemType << "[]"; }
+    void Check();
+    bool IsEquivalentTo(Type *other);
+    bool IsArrayType() { return true; }
+    bool IsError() { return elemType->IsError(); }
+    Type *GetArrayElemType() { return elemType; }
     virtual size_t getSize();
 };
 

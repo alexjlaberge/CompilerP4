@@ -5,7 +5,7 @@
 #include "ast_type.h"
 #include "ast_decl.h"
 #include <string.h>
-#include <cassert>
+#include "errors.h"
  
 /* Class constants
  * ---------------
@@ -23,21 +23,6 @@ Type *Type::nullType   = new Type("null");
 Type *Type::stringType = new Type("string");
 Type *Type::errorType  = new Type("error"); 
 
-Type::Type(const char *n) {
-    Assert(n);
-    typeName = strdup(n);
-}
-
-NamedType::NamedType(Identifier *i) : Type(*i->GetLocation()) {
-    Assert(i != NULL);
-    (id=i)->SetParent(this);
-} 
-
-ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
-    Assert(et != NULL);
-    (elemType=et)->SetParent(this);
-}
-
 size_t Type::getSize() {
         return 4;
 }
@@ -49,3 +34,92 @@ size_t NamedType::getSize() {
 size_t ArrayType::getSize() {
         return 4;
 }
+
+Type::Type(const char *n) {
+    Assert(n);
+    typeName = strdup(n);
+}
+
+ Type *Type::LesserType(Type *other) {
+    if (this == Type::errorType || other == Type::errorType)
+        return Type::errorType;
+    if (other == NULL)
+        return this;
+    if (IsCompatibleWith(other)) return other;
+    if (other->IsCompatibleWith(this)) return this;
+    return NULL;
+}
+
+
+bool Type::IsCompatibleWith(Type *other) {
+    if (this == errorType || other == errorType) return true;
+    if ((this == nullType) && (other->IsNamedType()))
+        return true;
+    return IsEquivalentTo(other);
+}
+	
+NamedType::NamedType(Identifier *i) : Type(*i->GetLocation()) {
+    Assert(i != NULL);
+    (id=i)->SetParent(this);
+    declForType = NULL;
+    isError = false;
+} 
+
+void NamedType::Check() {
+    if (!GetDeclForType()) {
+        isError = true;
+        ReportError::IdentifierNotDeclared(id, LookingForType);
+    }
+}
+Decl *NamedType::GetDeclForType() {
+    if (!declForType && !isError) {
+        Decl *declForName = FindDecl(id);
+        if (declForName && (declForName->IsClassDecl() || declForName->IsInterfaceDecl())) 
+            return declForName;
+    }
+    return declForType;
+}
+
+void NamedType::SetDeclForType(Decl *decl) {
+    declForType = decl;
+}
+
+bool NamedType::IsInterface() {
+    Decl *d = GetDeclForType();
+    return (d && d->IsInterfaceDecl());
+}
+
+bool NamedType::IsClass() {
+    Decl *d = GetDeclForType();
+    return (d && d->IsClassDecl());
+}
+
+bool NamedType::IsEquivalentTo(Type *other) {
+    NamedType *ot = dynamic_cast<NamedType*>(other);
+    return ot && strcmp(id->GetName(), ot->id->GetName()) == 0;
+}
+bool NamedType::IsCompatibleWith(Type *other) {
+    if (IsEquivalentTo(other)) return true;
+    if (other == errorType || isError) return true; 
+    NamedType *ot = dynamic_cast<NamedType*>(other);
+    if (!ot) return false;
+    if (ot->isError) return true;
+    ClassDecl *cd = dynamic_cast<ClassDecl*>(GetDeclForType());
+    return cd && cd->IsCompatibleWith(other);
+}
+
+
+ArrayType::ArrayType(yyltype loc, Type *et) : Type(loc) {
+    Assert(et != NULL);
+    (elemType=et)->SetParent(this);
+}
+
+void ArrayType::Check() {
+    elemType->Check();
+}
+
+bool ArrayType::IsEquivalentTo(Type *other) {
+    ArrayType *o = dynamic_cast<ArrayType*>(other);
+    return (o && elemType->IsEquivalentTo(o->elemType));
+}
+

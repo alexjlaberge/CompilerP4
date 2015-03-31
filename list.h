@@ -31,9 +31,9 @@
 #include <deque>
 #include <algorithm>
 #include "utility.h"  // for Assert()
+#include "scope.h"
   
 class Node;
-class CodeGenerator;
 
 template<class Element> class List {
 
@@ -102,9 +102,13 @@ template<class Element> class List {
     void SetParentAll(Node *p)
         { for (int i = 0; i < NumElements(); i++)
              Nth(i)->SetParent(p); }
-    void EmitAll(CodeGenerator *cg)
+    void DeclareAll(Scope *s)
         { for (int i = 0; i < NumElements(); i++)
-             Nth(i)->Emit(cg); }
+             s->Declare(Nth(i)); }
+
+   void CheckAll()
+        { for (int i = 0; i < NumElements(); i++)
+             Nth(i)->Check(); }
 
 };
 

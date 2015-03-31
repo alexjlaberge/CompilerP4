@@ -17,7 +17,7 @@ PRODUCTS = $(COMPILER)
 default: $(PRODUCTS)
 
 # Set up the list of source and object files
-SRCS = ast.cc ast_decl.cc ast_expr.cc ast_stmt.cc ast_type.cc codegen.cc tac.cc mips.cc errors.cc utility.cc libyywrap.cc main.cc
+SRCS = ast.cc ast_decl.cc ast_expr.cc ast_stmt.cc ast_type.cc codegen.cc scope.cc tac.cc mips.cc errors.cc utility.cc libyywrap.cc main.cc
 
 # OBJS can deal with either .cc or .c files listed in SRCS
 OBJS = lex.yy.o y.tab.o $(patsubst %.cc, %.o, $(filter %.cc,$(SRCS))) $(patsubst %.c, %.o, $(filter %.c, $(SRCS)))

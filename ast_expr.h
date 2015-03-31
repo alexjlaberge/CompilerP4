@@ -4,9 +4,6 @@
  * expressions in the parse tree.  For each expression in the
  * language (add, call, New, etc.) there is a corresponding
  * node class for that construct. 
- *
- * pp4: You will need to extend the Expr classes to implement 
- * code generation for expressions.
  */
 
 
@@ -16,9 +13,12 @@
 #include "ast.h"
 #include "ast_stmt.h"
 #include "list.h"
+#include "codegen.h"
 
 class NamedType; // for new
 class Type; // for NewArray
+class ClassDecl; // for This
+class Location;
 
 
 class Expr : public Stmt 
@@ -26,6 +26,9 @@ class Expr : public Stmt
   public:
     Expr(yyltype loc) : Stmt(loc) {}
     Expr() : Stmt() {}
+    void Check() { CheckAndComputeResultType(); }
+    virtual Type* CheckAndComputeResultType() = 0;
+    Location* loc;
 };
 
 /* This node type is used for those places where an expression is optional.
@@ -34,53 +37,61 @@ class Expr : public Stmt
 class EmptyExpr : public Expr
 {
   public:
-          void Emit();
+    Type* CheckAndComputeResultType();
+    virtual void Emit();
 };
 
 class IntConstant : public Expr 
 {
   protected:
     int value;
-
+  
   public:
     IntConstant(yyltype loc, int val);
-    void Emit();
+    Type *CheckAndComputeResultType();
+    int getVal() {return value;}
+    virtual void Emit();
 };
 
 class DoubleConstant : public Expr 
 {
   protected:
     double value;
-
+    
   public:
     DoubleConstant(yyltype loc, double val);
-    void Emit();
+    Type *CheckAndComputeResultType();
+    virtual void Emit();
 };
 
 class BoolConstant : public Expr 
 {
   protected:
     bool value;
-
+    
   public:
     BoolConstant(yyltype loc, bool val);
-    void Emit();
+    Type *CheckAndComputeResultType();
+    virtual void Emit();
 };
 
 class StringConstant : public Expr 
 { 
   protected:
     char *value;
-
+    
   public:
     StringConstant(yyltype loc, const char *val);
+    Type *CheckAndComputeResultType();
     void Emit();
+    
 };
 
 class NullConstant: public Expr 
 {
   public: 
     NullConstant(yyltype loc) : Expr(loc) {}
+    Type *CheckAndComputeResultType();
     void Emit();
 };
 
@@ -88,21 +99,25 @@ class Operator : public Node
 {
   protected:
     char tokenString[4];
-
+    
   public:
     Operator(yyltype loc, const char *tok);
     friend std::ostream& operator<<(std::ostream& out, Operator *o) { return out << o->tokenString; }
+    const char *str() { return tokenString; }
+    char* getChar() {return tokenString;}
  };
-
+ 
 class CompoundExpr : public Expr
 {
   protected:
     Operator *op;
     Expr *left, *right; // left will be NULL if unary
-
+    
   public:
     CompoundExpr(Expr *lhs, Operator *op, Expr *rhs); // for binary
     CompoundExpr(Operator *op, Expr *rhs);             // for unary
+    void ReportErrorForIncompatibleOperands(Type *lhs, Type *rhs);
+    bool CanDoArithmetic(Type *lhs, Type *rhs);
 };
 
 class ArithmeticExpr : public CompoundExpr 
@@ -110,6 +125,7 @@ class ArithmeticExpr : public CompoundExpr
   public:
     ArithmeticExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     ArithmeticExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -117,6 +133,7 @@ class RelationalExpr : public CompoundExpr
 {
   public:
     RelationalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -125,6 +142,7 @@ class EqualityExpr : public CompoundExpr
   public:
     EqualityExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "EqualityExpr"; }
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -134,6 +152,7 @@ class LogicalExpr : public CompoundExpr
     LogicalExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     LogicalExpr(Operator *op, Expr *rhs) : CompoundExpr(op,rhs) {}
     const char *GetPrintNameForNode() { return "LogicalExpr"; }
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -142,6 +161,7 @@ class AssignExpr : public CompoundExpr
   public:
     AssignExpr(Expr *lhs, Operator *op, Expr *rhs) : CompoundExpr(lhs,op,rhs) {}
     const char *GetPrintNameForNode() { return "AssignExpr"; }
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -154,17 +174,22 @@ class LValue : public Expr
 
 class This : public Expr 
 {
+  protected:
+    ClassDecl *enclosingClass;
+    
   public:
-    This(yyltype loc) : Expr(loc) {}
+    This(yyltype loc) : Expr(loc), enclosingClass(NULL)  {}
+    Type* CheckAndComputeResultType();
 };
 
 class ArrayAccess : public LValue 
 {
   protected:
     Expr *base, *subscript;
-
+    
   public:
     ArrayAccess(yyltype loc, Expr *base, Expr *subscript);
+    Type *CheckAndComputeResultType();
     void Emit();
 };
 
@@ -178,9 +203,10 @@ class FieldAccess : public LValue
   protected:
     Expr *base;	// will be NULL if no explicit base
     Identifier *field;
-
+    
   public:
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -194,9 +220,11 @@ class Call : public Expr
     Expr *base;	// will be NULL if no explicit base
     Identifier *field;
     List<Expr*> *actuals;
-
+    
   public:
     Call(yyltype loc, Expr *base, Identifier *field, List<Expr*> *args);
+    Decl *GetFnDecl();
+    Type *CheckAndComputeResultType();
     void Emit();
 };
 
@@ -204,9 +232,10 @@ class NewExpr : public Expr
 {
   protected:
     NamedType *cType;
-
+    
   public:
     NewExpr(yyltype loc, NamedType *clsType);
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -215,9 +244,10 @@ class NewArrayExpr : public Expr
   protected:
     Expr *size;
     Type *elemType;
-
+    
   public:
     NewArrayExpr(yyltype loc, Expr *sizeExpr, Type *elemType);
+    Type* CheckAndComputeResultType();
     void Emit();
 };
 
@@ -225,6 +255,7 @@ class ReadIntegerExpr : public Expr
 {
   public:
     ReadIntegerExpr(yyltype loc) : Expr(loc) {}
+    Type *CheckAndComputeResultType();
     void Emit();
 };
 
@@ -232,7 +263,9 @@ class ReadLineExpr : public Expr
 {
   public:
     ReadLineExpr(yyltype loc) : Expr (loc) {}
+    Type *CheckAndComputeResultType();
     void Emit();
 };
 
+    
 #endif

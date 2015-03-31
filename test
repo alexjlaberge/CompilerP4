@@ -1,0 +1,22 @@
+int main()
+{
+	int a;
+	int b;
+	bool c;
+	a = 2 + 2;
+	c = true;
+	Print("abcdefg", c);
+	return a;
+}
+
+int v()
+{
+	int a;
+	int b;
+	int c;
+
+	a = 1;
+	b = 1;
+	c = a + b;
+	return c;
+}
