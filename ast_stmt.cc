@@ -122,7 +122,6 @@ void Program::Emit() {
 }
 
 void StmtBlock::Emit() {
-        /* TODO */
         for(int i = 0; i < decls->NumElements(); i++)
             decls->Nth(i)->Emit();
         for(int i = 0; i < stmts->NumElements(); i++)
@@ -147,25 +146,43 @@ void IfStmt::Emit() {
          {
             codegen.GenLabel(temp);
          }
-
-        /* TODO */
 }
 
 void ForStmt::Emit() {
-        /* TODO */
+
+        init->Emit();
+        char* temp1 = codegen.NewLabel();
+        char* temp2 = codegen.NewLabel();
+        breakLabels.push_back(temp2);
+        codegen.GenLabel(temp1);
+        test->Emit();
+        codegen.GenIfZ(test->loc, temp2);
+        body->Emit();
+        step->Emit();
+        breakLabels.pop_back();
+        codegen.GenGoto(temp1);
+        codegen.GenLabel(temp2);
+
 }
 
 void WhileStmt::Emit() {
-        /* TODO */
+        char* temp1 = codegen.NewLabel();
+        char* temp2 = codegen.NewLabel();
+        breakLabels.push_back(temp2);
+        codegen.GenLabel(temp1);
+        test->Emit();
+        codegen.GenIfZ(test->loc, temp2);
+        body->Emit();
+        breakLabels.pop_back();
+        codegen.GenGoto(temp1);
+        codegen.GenLabel(temp2);
 }
 
 void PrintStmt::Emit() {
-        /* TODO */
         Location *loc1;
         for(int i = 0; i < args->NumElements(); i++)
         {
             args->Nth(i)->Emit();
-            //codegen.GenPushParam(args->Nth(i)->loc);
             if(args->Nth(i)->CheckAndComputeResultType() == Type::boolType)
             {
                 codegen.GenBuiltInCall(PrintBool, args->Nth(i)->loc, nullptr);
@@ -178,18 +195,16 @@ void PrintStmt::Emit() {
             {
                 codegen.GenBuiltInCall(PrintInt, args->Nth(i)->loc, nullptr);
             }
-            //codegen->args->Nth(i)->loc
         }
 }
 
 void ReturnStmt::Emit() {
-        /* TODO */
         expr->Emit();
         codegen.GenReturn(expr->loc);
 }
 
 void BreakStmt::Emit() {
-        /* TODO */
+        codegen.GenGoto(breakLabels[breakLabels.size()-1]);
 }
 
 size_t Stmt::localSpaceRequired() {

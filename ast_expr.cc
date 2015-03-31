@@ -320,17 +320,15 @@ void Call::Emit() {
 }
 
 void FieldAccess::Emit() {
-        /* TODO */
+        //TODO
         if(base == nullptr)
         {
-            //cout << "BRAAAA" << flush;
             loc = new Location(fpRelative, 0, field->GetName());
-            //cout << "BRAAAA" << flush;
         }
 
         else
         {
-            //cout << "PANGAS" << flush;
+
         }
 
 }
@@ -340,23 +338,39 @@ void LValue::Emit() {
 }
 
 void AssignExpr::Emit() {
-        /* TODO */
-        //cout << "Assign" << flush;
         left->Emit();
         right->Emit();
         codegen.GenAssign(left->loc, right->loc);
 }
 
 void LogicalExpr::Emit() {
-        /* TODO */
+        if(left == nullptr)
+        {
+            right->Emit();
+            Location *loc1 = codegen.GenLoadConstant(0);
+            loc = codegen.GenBinaryOp("==", right->loc, loc1);
+            return;
+        }
+        left->Emit();
+        right->Emit();
+        loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
+
 }
 
 void EqualityExpr::Emit() {
-        /* TODO */
+        left->Emit();
+        right->Emit();
+        if(!strcmp(op->getChar(), "=="))
+            loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
+        else if(!strcmp(op->getChar(), "!="))
+        {
+            Location *loc1 = codegen.GenBinaryOp("==", left->loc, right->loc);
+            Location *loc2 = codegen.GenLoadConstant(0);
+            loc = codegen.GenBinaryOp("==", loc1, loc2);
+        }
 }
 
 void RelationalExpr::Emit() {
-        /* TODO */
         left->Emit();
         right->Emit();
         if(!strcmp(op->getChar(), ">="))
@@ -383,8 +397,13 @@ void RelationalExpr::Emit() {
 }
 
 void ArithmeticExpr::Emit() {
-        /* TODO */
-
+    if(left == nullptr)
+    {
+        right->Emit();
+        Location *loc1 = codegen.GenLoadConstant(0);
+        loc = codegen.GenBinaryOp("-", loc1, right->loc);
+        return;
+    }
     left->Emit();
     right->Emit();
 
@@ -400,11 +419,11 @@ void EmptyExpr::Emit() {
 }
 
 void ReadLineExpr::Emit() {
-        /* TODO */
+        loc = codegen.GenBuiltInCall(ReadLine, nullptr, nullptr);
 }
 
 void ReadIntegerExpr::Emit() {
-        /* TODO */
+        loc = codegen.GenBuiltInCall(ReadInteger, nullptr, nullptr);
 }
 
 void NullConstant::Emit() {

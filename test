@@ -1,15 +1,31 @@
 int main()
 {
-	int a;
+	//int a;
 	int b;
 	bool c;
-	a = 2 + 2;
+	//a = 2 + 2;
+	b = 1;
+	b = -b;
 	c = true;
-	Print("abcdefg", c);
-	return a;
+	c = !c;
+
+	//c = c != c;
+	//c = c == c;
+	//Print("abcdefg", c);
+	/*for(a = 0; a < 6; a = a + 1)
+	{
+		b = b + 1;
+		break;
+		while(a < 2)
+		{
+			break;
+		}
+	}*/
+	//a = ReadInteger();
+	//return b;
 }
 
-int v()
+/*int v()
 {
 	int a;
 	int b;
@@ -19,4 +35,4 @@ int v()
 	b = 1;
 	c = a + b;
 	return c;
-}
+}*/

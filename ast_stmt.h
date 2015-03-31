@@ -12,10 +12,14 @@
 
 #include "list.h"
 #include "ast.h"
+#include <vector>
 
 class Decl;
 class VarDecl;
 class Expr;
+using namespace std;
+
+static vector<char*> breakLabels;
   
 class Program : public Node
 {
