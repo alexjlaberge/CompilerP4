@@ -115,7 +115,6 @@ void Program::Emit() {
 
         for(int i = 0; i < decls->NumElements(); i++)
         {
-            cout << "cum" << flush;
             decls->Nth(i)->Emit();
         }
 
@@ -166,6 +165,19 @@ void PrintStmt::Emit() {
         for(int i = 0; i < args->NumElements(); i++)
         {
             args->Nth(i)->Emit();
+            //codegen.GenPushParam(args->Nth(i)->loc);
+            if(args->Nth(i)->CheckAndComputeResultType() == Type::boolType)
+            {
+                codegen.GenBuiltInCall(PrintBool, args->Nth(i)->loc, nullptr);
+            }
+            else if(args->Nth(i)->CheckAndComputeResultType() == Type::stringType)
+            {
+                codegen.GenBuiltInCall(PrintString, args->Nth(i)->loc, nullptr);
+            }
+            else if(args->Nth(i)->CheckAndComputeResultType() == Type::intType)
+            {
+                codegen.GenBuiltInCall(PrintInt, args->Nth(i)->loc, nullptr);
+            }
             //codegen->args->Nth(i)->loc
         }
 }

@@ -290,6 +290,7 @@ void BoolConstant::Emit() {
 
 void StringConstant::Emit() {
         /* TODO */
+    loc = codegen.GenLoadConstant(value);
 }
 
 void ArrayAccess::Emit() {
