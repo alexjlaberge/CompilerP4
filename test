@@ -1,38 +1,31 @@
-int main()
-{
-	//int a;
-	int b;
-	bool c;
-	//a = 2 + 2;
-	b = 1;
-	b = -b;
-	c = true;
-	c = !c;
+int a;
 
-	//c = c != c;
-	//c = c == c;
-	//Print("abcdefg", c);
-	/*for(a = 0; a < 6; a = a + 1)
-	{
-		b = b + 1;
-		break;
-		while(a < 2)
-		{
-			break;
-		}
-	}*/
-	//a = ReadInteger();
-	//return b;
+class B
+{
+	int c;
+	int d;
+	int getB(){return c;}
+	string getBString(){return "paggooooo";}
 }
 
-/*int v()
+class A extends B
 {
 	int a;
 	int b;
-	int c;
+	int getA()
+	{
+		return a;
+		return b;
+		return c;
+		return d;
+	}
+	string getAString()
+	{
+		return "fuck";
+	}
+}
 
-	a = 1;
-	b = 1;
-	c = a + b;
-	return c;
-}*/
+int main()
+{
+	return a;
+}

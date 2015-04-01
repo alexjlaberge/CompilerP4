@@ -219,20 +219,51 @@ bool FnDecl::MatchesPrototype(FnDecl *other) {
 }
 
 void VarDecl::Emit() {
-        /* TODO */
+        
 }
 
 void ClassDecl::Emit() {
-        /* TODO */
+        //Emit Functions with different Labels
+        //Emit Body of those functions
+        //
+        //Generate V-Table
+        //char *a = (char*)malloc(50);
+        List<const char*> *m = new List<const char*>;
+        for(int i = 0; i < members->NumElements(); i++)
+        {
+            //char *a = (char*)malloc(50);
+
+            if(members->Nth(i)->IsFnDecl())
+            {
+                char *a = (char*)malloc(50);
+
+                sprintf(a, "_%s.%s", GetName(), members->Nth(i)->GetName());
+                //codegen.GenLabel(a);
+                members->Nth(i)->Emit();
+                //printf("%s",a);
+
+                m->Append(a);
+            }
+        }
+        codegen.GenVTable(GetName(), m);
 }
 
 void FnDecl::Emit() {
         char temp[32];
-        sprintf(temp, "_%s", id->GetName());
-        if(!strcmp(id->GetName(), "main"))
-            codegen.GenLabel(id->GetName());
+        if(parent != nullptr)
+        {
+            char *a = (char*)malloc(50);
+            sprintf(a, "_%s.%s", ((ClassDecl*)parent)->GetName(), GetName());
+            codegen.GenLabel(a);
+        }
         else
-            codegen.GenLabel(temp);
+        {  
+            sprintf(temp, "_%s", id->GetName());
+            if(!strcmp(id->GetName(), "main"))
+                codegen.GenLabel(id->GetName());
+            else
+                codegen.GenLabel(temp);
+        }
 
         BeginFunc *func = codegen.GenBeginFunc();
         func->SetFrameSize(body->localSpaceRequired());

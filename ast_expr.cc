@@ -328,7 +328,7 @@ void FieldAccess::Emit() {
 
         else
         {
-
+            
         }
 
 }
