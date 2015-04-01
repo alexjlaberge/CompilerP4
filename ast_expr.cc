@@ -323,12 +323,13 @@ void FieldAccess::Emit() {
         //TODO
         if(base == nullptr)
         {
-            loc = new Location(fpRelative, 0, field->GetName());
+            int location = FindDecl(field)->currLocation;
+            loc = new Location(fpRelative, location, field->GetName());
         }
 
         else
         {
-            
+            //Either implicit or explicit base
         }
 
 }

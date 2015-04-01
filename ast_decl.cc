@@ -163,10 +163,13 @@ FnDecl::FnDecl(Identifier *n, Type *r, List<VarDecl*> *d) : Decl(n) {
     {
             mainDefined = true;
     }
+    currLocation = -8;
 }
 
-void FnDecl::SetFunctionBody(Stmt *b) { 
+void FnDecl::SetFunctionBody(Stmt *b) {
+    //currLocation = -8; 
     (body=b)->SetParent(this);
+    //cout << "END OF FUNC " << currLocation << endl;
 }
 
 void FnDecl::Check() {
@@ -175,7 +178,12 @@ void FnDecl::Check() {
     formals->DeclareAll(nodeScope);
     CheckPrototype();
     if (body)
-	body->Check();
+    {
+        //currLocation = -8;
+	   body->Check();
+    }
+        //cout << "ENd OF FUNC " << currLocation << endl;
+        //currLocation = -8;
 }
 
 void FnDecl::CheckPrototype() {
@@ -250,7 +258,7 @@ void ClassDecl::Emit() {
 
 void FnDecl::Emit() {
         char temp[32];
-        if(parent != nullptr)
+        if(dynamic_cast<ClassDecl*>(parent))
         {
             char *a = (char*)malloc(50);
             sprintf(a, "_%s.%s", ((ClassDecl*)parent)->GetName(), GetName());

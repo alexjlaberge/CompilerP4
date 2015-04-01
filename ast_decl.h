@@ -17,6 +17,10 @@ class Identifier;
 class Stmt;
 class FnDecl;
 class InterfaceDecl;
+class Location;
+
+//int currLocation = -8;
+//static int currDiff = 0;
 
 class Decl : public Node 
 {
@@ -24,6 +28,7 @@ class Decl : public Node
     Identifier *id;
   
   public:
+    int currLocation;
     Decl(Identifier *name);
     friend std::ostream& operator<<(std::ostream& out, Decl *d) { return out << d->id; }
     Identifier *GetId() { return id; }
@@ -43,6 +48,8 @@ class VarDecl : public Decl
 {
   protected:
     Type *type;
+    bool isGP;
+    Location* loc;
     
   public:
     VarDecl(Identifier *name, Type *type);
@@ -50,6 +57,8 @@ class VarDecl : public Decl
     Type *GetDeclaredType() { return type; }
     bool IsVarDecl() { return true; }
     bool IsIvarDecl();
+    void setLocation(Location *nloc) {loc = nloc;}
+    Location* getLocation() {return loc;}
     size_t getSize();
     virtual void Emit();
 };

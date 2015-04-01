@@ -1,6 +1,7 @@
 int a;
+int b;
 
-class B
+/*class B
 {
 	int c;
 	int d;
@@ -23,9 +24,24 @@ class A extends B
 	{
 		return "fuck";
 	}
-}
+}*/
 
 int main()
 {
+	int a;
+	int b;
 	return a;
+	return b;
+}
+
+int v()
+{
+	int a;
+	int b;
+	{
+	int a;
+	int b;
+	return a;
+	return b;
+	}
 }

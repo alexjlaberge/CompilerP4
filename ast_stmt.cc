@@ -34,6 +34,21 @@ void StmtBlock::Check() {
     nodeScope = new Scope();
     decls->DeclareAll(nodeScope);
     decls->CheckAll();
+    FnDecl* parentFn;
+    Node* parents = parent;
+    while(!dynamic_cast<FnDecl*>(parents))
+    {
+        parents = parent->GetParent();
+    }
+    parentFn = dynamic_cast<FnDecl*>(parents);
+    for(int i = 0; i < decls->NumElements(); i++)
+    {
+        //cout << decls->Nth(i)->GetName() <<  " "<< parentFn->currLocation << endl; 
+        Location *l = new Location(fpRelative, parentFn->currLocation, decls->Nth(i)->GetName());
+        decls->Nth(i)->currLocation = parentFn->currLocation;
+        decls->Nth(i)->setLocation(l);
+        parentFn->currLocation = parentFn->currLocation - 4;
+    }
     stmts->CheckAll();
 }
 
