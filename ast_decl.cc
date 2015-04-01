@@ -267,7 +267,7 @@ void FnDecl::Emit() {
         }
         else
         {  
-            sprintf(temp, "_%s", id->GetName());
+            sprintf(temp, "%s", id->GetName());
             if(!strcmp(id->GetName(), "main"))
                 codegen.GenLabel(id->GetName());
             else
