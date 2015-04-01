@@ -258,10 +258,11 @@ void ClassDecl::Emit() {
 
 void FnDecl::Emit() {
         char temp[32];
-        if(dynamic_cast<ClassDecl*>(parent))
+        if(dynamic_cast<ClassDecl*>(parent) != nullptr)
         {
             char *a = (char*)malloc(50);
-            sprintf(a, "_%s.%s", ((ClassDecl*)parent)->GetName(), GetName());
+            sprintf(a, "_%s.%s", dynamic_cast<ClassDecl*>(parent)->GetName(),
+                            GetName());
             codegen.GenLabel(a);
         }
         else
@@ -274,6 +275,7 @@ void FnDecl::Emit() {
         }
 
         BeginFunc *func = codegen.GenBeginFunc();
+
         func->SetFrameSize(body->localSpaceRequired());
 
         body->Emit();

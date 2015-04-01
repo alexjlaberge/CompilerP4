@@ -26,7 +26,7 @@ do
         ./solution/dcc < ${input}.decaf > ${input}.s 2> /dev/null
         spim_run ${input}
 
-        diff -aq ${input}.out ${CURRENT_OUTPUT} && echo "PASS"
+        diff -awq ${input}.out ${CURRENT_OUTPUT} && echo "PASS"
         if [ ! "$?" -eq 0 ]
         then
                 FAILED="${FAILED} ${input}"
@@ -34,7 +34,7 @@ do
 
         if [ "samples/${1}" == ${input} ]
         then
-                diff -a ${input}.out ${CURRENT_OUTPUT}
+                diff -aw ${input}.out ${CURRENT_OUTPUT}
                 exit 1
         fi
 done

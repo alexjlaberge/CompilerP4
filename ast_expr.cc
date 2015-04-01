@@ -310,13 +310,32 @@ void NewArrayExpr::Emit() {
          * 3. Call builtin Alloc
          */
 
-        //Location *size_loc = ;
-        //Location *arr = codegen.GenBuiltInCall(Alloc, Location *arg1 = NULL, Location *arg2 = NULL);
-        //codegen.GenAssign(ptr, arr)
+        size->Emit();
+        Location *zero = codegen.GenLoadConstant(0);
+        loc = codegen.GenBinaryOp("<", size->loc, zero);
+
+        char *tmp = codegen.NewLabel();
+        codegen.GenIfZ(loc, tmp);
+
+        /* error message */
+        Location *msg = codegen.GenLoadConstant(
+                        "Decaf runtime error: Array size is <= 0");
+        codegen.GenBuiltInCall(PrintString, msg, nullptr);
+        codegen.GenBuiltInCall(Halt, nullptr, nullptr);
+
+        codegen.GenLabel(tmp);
+
+        loc = codegen.GenBuiltInCall(Alloc, size->loc, nullptr);
 }
 
 void Call::Emit() {
-        /* TODO */
+        /** TODO
+         * 1. Make a temporary variable
+         * 2. Generate a function call instruction
+         * 3. Put the return value in the temporary variable
+         */
+        loc = codegen.GenLCall(field->GetName(),
+                        CheckAndComputeResultType() != Type::voidType);
 }
 
 void FieldAccess::Emit() {
