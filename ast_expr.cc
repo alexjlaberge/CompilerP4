@@ -295,11 +295,33 @@ void StringConstant::Emit() {
 
 void ArrayAccess::Emit() {
         /* TODO */
+        base->Emit();
+        subscript->Emit();
+        Location *zero = codegen.GenLoadConstant(0);
+        Location *check1 = codegen.GenBinaryOp("<", subscript->loc, zero);
+        Location *size = codegen.GenLoad(base->loc, -4);
+        Location *tmp1 = codegen.GenBinaryOp("<", subscript->loc, size);
+        Location *tmp2 = codegen.GenBinaryOp("==", tmp1, zero);
+        Location *check2 = codegen.GenBinaryOp("||", check1, tmp2);
+        char* go = codegen.NewLabel();
+        codegen.GenIfZ(check2, go);
+        Location *msg = codegen.GenLoadConstant(
+                        "Decaf runtime error: Array subscript out of bound...");
+        codegen.GenBuiltInCall(PrintString, msg, nullptr);
+        codegen.GenBuiltInCall(Halt, nullptr, nullptr);
+        codegen.GenLabel(go);
+        Location *four = codegen.GenLoadConstant(4);
+        Location *position = codegen.GenBinaryOp("*", four, subscript->loc);
+        Location *calculatedPos = codegen.GenBinaryOp("+", base->loc, position);
+        loc = calculatedPos;
+
+
 }
 
 void NewExpr::Emit() {
         /* TODO */
         //Gen Location for named type
+        //cout << "PANGAS" << endl << flush;
         Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
         //
         Location *four = codegen.GenLoadConstant(4);
@@ -350,22 +372,59 @@ void Call::Emit() {
          * 2. Generate a function call instruction
          * 3. Put the return value in the temporary variable
          */
-        loc = codegen.GenLCall(field->GetName(),
+        if(base == nullptr)
+        {
+            char* tmp = (char*)malloc(50);
+            sprintf(tmp, "_%s", field->GetName());
+            if(!strcmp(field->GetName(), "main"))
+            {
+                loc = codegen.GenLCall(field->GetName(),
                         CheckAndComputeResultType() != Type::voidType);
+            }
+            else
+            {
+                loc = codegen.GenLCall(tmp,
+                        CheckAndComputeResultType() != Type::voidType);
+            }
+        }
+        else
+        {
+            //Calculate func offset
+            int offset = 0;
+            field->Emit();
+            //Load the base
+            Location *tmp = new Location(fpRelative, 0, field->GetName());
+            Location *classLocation = codegen.GenLoad(tmp, offset);
+            //Load from base + offset
+            Location *fnLocation = codegen.GenLoad(classLocation, offset);
+            //Set loc to be the call
+            loc = codegen.GenACall(fnLocation,
+                        CheckAndComputeResultType() != Type::voidType);
+        }
+
 }
 
 void FieldAccess::Emit() {
         //TODO
-        if(base == nullptr)
-        {
+        //if(base == nullptr)
+       // {
             int location = FindDecl(field)->currLocation;
             loc = new Location(fpRelative, location, field->GetName());
-        }
+       // }
 
-        else
-        {
-            //Either implicit or explicit base
-        }
+        //else
+       /* {
+            //Get the Location for the base
+            base.Emit();
+            GetDeclRelativeToBase(CheckAndComputeResultType);
+
+            //Load from base location
+
+            //Load from that with offset of field
+
+
+            Location *t = new Location(fpRelative)
+        }*/
 
 }
 
@@ -376,6 +435,15 @@ void LValue::Emit() {
 void AssignExpr::Emit() {
         left->Emit();
         right->Emit();
+        if(dynamic_cast<ArrayAccess*>(right))
+        {
+            right->loc = codegen.GenLoad(right->loc);
+        }
+        if(dynamic_cast<ArrayAccess*>(left))
+        {
+            codegen.GenStore(left->loc, right->loc);
+        }
+        else
         codegen.GenAssign(left->loc, right->loc);
 }
 

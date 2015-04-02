@@ -1,59 +1,48 @@
-int a;
-int b;
-
-/*class B
-{
-	int c;
-	int d;
-	int getB(){return c;}
-	string getBString(){return "paggooooo";}
-}
-
-class A extends B
-{
-	int a;
-	int b;
-	int getA()
-	{
-		return a;
-		return b;
-		return c;
-		return d;
-	}
-	string getAString()
-	{
-		return "fuck";
-	}
-}*/
-
-class A
-{
-	
-}
+/*int c;
+int q;
 
 class B
 {
-	
-}
+	int a;
+	B h;
+	void getB(){}
+	void getA(){}
+	int getC()
+	{
+		//a = c;
+		return h.a;
+		return q;
+		return z;
+	}	
+}*/
 
 int main()
 {
-	int a;
-	int b;
-	return a;
-	return b;
+	int[] a;
+	a[1] = 2;
+	a[2] = a[1];
+	//int a;
+	//a = v();
+	//return a;
 }
 
-int v()
+/*int v()
 {
-	int a;
 	B b;
-	//a = 2 + a;
 	b = New(B);
-	{
-	int a;
-	int b;
+	return b.getC();
+	return main();
+}*/
+
+/*int hug(int a, int b, int c)
+{
+	int d;
+	int e;
+	int f;
 	return a;
 	return b;
-	}
-}
+	return c;
+	return d;
+	return e;
+	return f;
+}*/

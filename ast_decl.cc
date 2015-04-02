@@ -52,6 +52,16 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
 }
 
 void ClassDecl::Check() {
+    int curr = 4;
+    for(int i = 0; i < members->NumElements(); i++)
+    {
+        if(dynamic_cast<VarDecl*>(members->Nth(i)))
+        {
+            ((VarDecl*)members->Nth(i))->offset = curr;
+            curr += 4;
+        }
+    }
+
     ClassDecl *ext = extends ? dynamic_cast<ClassDecl*>(parent->FindDecl(extends->GetId())) : NULL; 
     if (extends && !ext) {
         ReportError::IdentifierNotDeclared(extends->GetId(), LookingForClass);
@@ -177,13 +187,17 @@ void FnDecl::Check() {
     nodeScope = new Scope();
     formals->DeclareAll(nodeScope);
     CheckPrototype();
+    int curr = 4;
+    for(int i = 0; i < formals->NumElements(); i++)
+    {
+        Location *l = new Location(fpRelative, curr, formals->Nth(i)->GetName());
+        formals->Nth(i)->setLocation(l);
+        curr = curr + 4;
+    }
     if (body)
     {
-        //currLocation = -8;
 	   body->Check();
     }
-        //cout << "ENd OF FUNC " << currLocation << endl;
-        //currLocation = -8;
 }
 
 void FnDecl::CheckPrototype() {
@@ -267,7 +281,7 @@ void FnDecl::Emit() {
         }
         else
         {  
-            sprintf(temp, "%s", id->GetName());
+            sprintf(temp, "_%s", id->GetName());
             if(!strcmp(id->GetName(), "main"))
                 codegen.GenLabel(id->GetName());
             else

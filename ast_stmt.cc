@@ -23,6 +23,15 @@ void Program::Check() {
     nodeScope = new Scope();
     decls->DeclareAll(nodeScope);
     decls->CheckAll();
+    int curr = 0;
+    for(int i = 0; i < decls->NumElements(); i++)
+    {
+        if(dynamic_cast<VarDecl*>(decls->Nth(i)))
+        {
+            Location *l = new Location(gpRelative, curr, decls->Nth(i)->GetName());
+            ((VarDecl*)decls->Nth(i))->setLocation(l);
+        }
+    }
 }
 
 StmtBlock::StmtBlock(List<VarDecl*> *d, List<Stmt*> *s) {

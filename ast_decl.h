@@ -48,10 +48,11 @@ class VarDecl : public Decl
 {
   protected:
     Type *type;
-    bool isGP;
     Location* loc;
     
   public:
+    bool isGP;
+    int offset;
     VarDecl(Identifier *name, Type *type);
     void Check();
     Type *GetDeclaredType() { return type; }
@@ -110,6 +111,7 @@ class FnDecl : public Decl
     Stmt *body;
     
   public:
+    int size;
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
     void Check();
