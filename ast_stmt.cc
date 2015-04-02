@@ -152,6 +152,19 @@ void StmtBlock::Emit() {
             stmts->Nth(i)->Emit();
 }
 
+int StmtBlock::getNumVars()
+{
+    int t = decls->NumElements();
+    for(int i = 0; i < stmts->NumElements(); i++)
+    {
+        if(dynamic_cast<StmtBlock*>(stmts->Nth(i)))
+        {
+            t += ((StmtBlock*)stmts->Nth(i))->getNumVars();
+        }
+    }
+    return t;
+}
+
 void IfStmt::Emit() {
          test->Emit();
          char* temp = codegen.NewLabel();

@@ -28,7 +28,6 @@ char *CodeGenerator::NewLabel()
 
 Location *CodeGenerator::GenTempVariable()
 {
-  static int nextTempNum;
   char temp[10];
   Location *result = NULL;
   sprintf(temp, "_tmp%d", nextTempNum++);

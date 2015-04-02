@@ -290,10 +290,18 @@ void FnDecl::Emit() {
 
         BeginFunc *func = codegen.GenBeginFunc();
 
-        func->SetFrameSize(body->localSpaceRequired());
-
+        //func->SetFrameSize(body->localSpaceRequired());
+        int start = codegen.getTempNum();
         body->Emit();
-
+        int end = codegen.getTempNum();
+        int diff = end - start;
+        diff = diff * 4;
+        int vars = 0;
+        if(dynamic_cast<StmtBlock*>(body))
+            vars = ((StmtBlock*)body)->getNumVars();
+        vars = vars * 4;
+        int frameSize = vars + diff;
+        func->SetFrameSize(frameSize);
         codegen.GenEndFunc();
 }
 

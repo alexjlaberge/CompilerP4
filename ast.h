@@ -40,6 +40,7 @@ class Node
     Scope *nodeScope;
 
   public:
+    int temps;
     Node(yyltype loc);
     Node();
     

@@ -26,6 +26,7 @@ typedef enum { Alloc, ReadLine, ReadInteger, StringEqual,
 class CodeGenerator {
   private:
     List<Instruction*> *code;
+    int nextTempNum;
 
   public:
            // Here are some class constants to remind you of the offsets
@@ -48,6 +49,8 @@ class CodeGenerator {
          // Assigns a new unique label name and returns it. Does not
          // generate any Tac instructions (see GenLabel below if needed)
     char *NewLabel();
+
+    int getTempNum(){return nextTempNum;}
 
          // Creates and returns a Location for a new uniquely named
          // temp variable. Does not generate any Tac instructions

@@ -51,6 +51,8 @@ class StmtBlock : public Stmt
     void Check();
     virtual void Emit();
     virtual size_t localSpaceRequired();
+    int getNumVars();
+
 };
 
   

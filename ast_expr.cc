@@ -272,8 +272,8 @@ Type *ReadIntegerExpr::CheckAndComputeResultType() { return Type::intType; }
 Type *ReadLineExpr::CheckAndComputeResultType() { return Type::stringType; }
 
 void IntConstant::Emit() {
+    temps = 1;
     loc = codegen.GenLoadConstant(getVal());
-        /* TODO */
 }
 
 void DoubleConstant::Emit() {
@@ -282,6 +282,7 @@ void DoubleConstant::Emit() {
 
 void BoolConstant::Emit() {
         /* TODO */
+    temps = 1;
     if(value)
         loc = codegen.GenLoadConstant(1);
     else
@@ -290,6 +291,7 @@ void BoolConstant::Emit() {
 
 void StringConstant::Emit() {
         /* TODO */
+    temps = 1;
     loc = codegen.GenLoadConstant(value);
 }
 
@@ -319,14 +321,10 @@ void ArrayAccess::Emit() {
 }
 
 void NewExpr::Emit() {
-        /* TODO */
         //Gen Location for named type
-        //cout << "PANGAS" << endl << flush;
         Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
-        //
         Location *four = codegen.GenLoadConstant(4);
         loc = codegen.GenBuiltInCall(Alloc, four, nullptr);
-        //get B
         Location *tmp = codegen.GenTempVariable();
         codegen.GenAssign(tmp, className);
         codegen.GenStore(loc, tmp);
@@ -334,7 +332,6 @@ void NewExpr::Emit() {
 }
 
 void NewArrayExpr::Emit() {
-        /* TODO */
 
         /**
          * 1. Compute size

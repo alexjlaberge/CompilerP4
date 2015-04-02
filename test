@@ -1,48 +1,18 @@
-/*int c;
-int q;
 
-class B
+int main(int d, int e, int f)
 {
 	int a;
-	B h;
-	void getB(){}
-	void getA(){}
-	int getC()
-	{
-		//a = c;
-		return h.a;
-		return q;
-		return z;
-	}	
-}*/
+	int b;
+	int c;
 
-int main()
-{
-	int[] a;
-	a[1] = 2;
-	a[2] = a[1];
-	//int a;
-	//a = v();
-	//return a;
+	a = c + 2 + b * 3 + 4;
+	b = c + a;
+	c = c * c / c + a;
+	{
+		int a;
+		int b;
+		int c;
+	}
+	return a;
 }
 
-/*int v()
-{
-	B b;
-	b = New(B);
-	return b.getC();
-	return main();
-}*/
-
-/*int hug(int a, int b, int c)
-{
-	int d;
-	int e;
-	int f;
-	return a;
-	return b;
-	return c;
-	return d;
-	return e;
-	return f;
-}*/
