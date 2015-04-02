@@ -311,8 +311,8 @@ void NewArrayExpr::Emit() {
          */
 
         size->Emit();
-        Location *zero = codegen.GenLoadConstant(0);
-        loc = codegen.GenBinaryOp("<", size->loc, zero);
+        Location *one = codegen.GenLoadConstant(1);
+        loc = codegen.GenBinaryOp("<", size->loc, one);
 
         char *tmp = codegen.NewLabel();
         codegen.GenIfZ(loc, tmp);
@@ -324,8 +324,14 @@ void NewArrayExpr::Emit() {
         codegen.GenBuiltInCall(Halt, nullptr, nullptr);
 
         codegen.GenLabel(tmp);
+        Location *newOne = codegen.GenLoadConstant(1);
+        Location *arrSize = codegen.GenBinaryOp("+", newOne, size->loc);
+        Location *four = codegen.GenLoadConstant(4);
+        Location *modSize = codegen.GenBinaryOp("*", arrSize, four);
+        Location *sizeLocation = codegen.GenBuiltInCall(Alloc, modSize, nullptr);
+        codegen.GenStore(sizeLocation, size->loc);
+        loc = codegen.GenBinaryOp("+", loc, four);
 
-        loc = codegen.GenBuiltInCall(Alloc, size->loc, nullptr);
 }
 
 void Call::Emit() {

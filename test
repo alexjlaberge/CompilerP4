@@ -36,8 +36,10 @@ int main()
 
 int v()
 {
-	int a;
+	int[] a;
 	int b;
+
+	a = NewArray(1,int);
 	{
 	int a;
 	int b;
