@@ -26,6 +26,16 @@ class A extends B
 	}
 }*/
 
+class A
+{
+	
+}
+
+class B
+{
+	
+}
+
 int main()
 {
 	int a;
@@ -36,10 +46,10 @@ int main()
 
 int v()
 {
-	int[] a;
-	int b;
-
-	a = NewArray(1,int);
+	int a;
+	B b;
+	//a = 2 + a;
+	b = New(B);
 	{
 	int a;
 	int b;

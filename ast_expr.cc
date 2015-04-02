@@ -299,6 +299,16 @@ void ArrayAccess::Emit() {
 
 void NewExpr::Emit() {
         /* TODO */
+        //Gen Location for named type
+        Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
+        //
+        Location *four = codegen.GenLoadConstant(4);
+        loc = codegen.GenBuiltInCall(Alloc, four, nullptr);
+        //get B
+        Location *tmp = codegen.GenTempVariable();
+        codegen.GenAssign(tmp, className);
+        codegen.GenStore(loc, tmp);
+
 }
 
 void NewArrayExpr::Emit() {
