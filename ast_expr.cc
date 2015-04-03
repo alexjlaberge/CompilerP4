@@ -403,25 +403,20 @@ void Call::Emit() {
 
 void FieldAccess::Emit() {
         //TODO
-        //if(base == nullptr)
-       // {
+        if(base == nullptr)
+        {
             int location = FindDecl(field)->currLocation;
             loc = new Location(fpRelative, location, field->GetName());
-       // }
+        }
 
-        //else
-       /* {
+        else
+        {
             //Get the Location for the base
-            base.Emit();
-            GetDeclRelativeToBase(CheckAndComputeResultType);
-
+            base->Emit();
+            
+            offset = ((VarDecl*)FindDecl(field))->offset;
             //Load from base location
-
-            //Load from that with offset of field
-
-
-            Location *t = new Location(fpRelative)
-        }*/
+        }
 
 }
 
@@ -436,24 +431,54 @@ void AssignExpr::Emit() {
         {
             right->loc = codegen.GenLoad(right->loc);
         }
+        if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+        {
+            int offset = ((FieldAccess*)right)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            right->loc = codegen.GenLoad(tmpThis, offset);
+        }
         if(dynamic_cast<ArrayAccess*>(left))
         {
             codegen.GenStore(left->loc, right->loc);
         }
+        else if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
+        {
+            int offset = ((FieldAccess*)left)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            codegen.GenStore(tmpThis, right->loc, offset);
+        }
         else
-        codegen.GenAssign(left->loc, right->loc);
+            codegen.GenAssign(left->loc, right->loc);
 }
 
 void LogicalExpr::Emit() {
         if(left == nullptr)
         {
             right->Emit();
+            if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+            {
+                int offset = ((FieldAccess*)right)->offset;
+                Location *tmpThis = new Location(fpRelative, 0, "this");
+                right->loc = codegen.GenLoad(tmpThis, offset);
+            }
             Location *loc1 = codegen.GenLoadConstant(0);
             loc = codegen.GenBinaryOp("==", right->loc, loc1);
             return;
         }
         left->Emit();
         right->Emit();
+        if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
+        {
+            int offset = ((FieldAccess*)left)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            left->loc = codegen.GenLoad(tmpThis, offset);
+        }
+        if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+        {
+            int offset = ((FieldAccess*)right)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            right->loc = codegen.GenLoad(tmpThis, offset);
+        }
         loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
 
 }
@@ -461,6 +486,18 @@ void LogicalExpr::Emit() {
 void EqualityExpr::Emit() {
         left->Emit();
         right->Emit();
+        if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
+        {
+            int offset = ((FieldAccess*)left)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            left->loc = codegen.GenLoad(tmpThis, offset);
+        }
+        if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+        {
+            int offset = ((FieldAccess*)right)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            right->loc = codegen.GenLoad(tmpThis, offset);
+        }
         if(!strcmp(op->getChar(), "=="))
             loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
         else if(!strcmp(op->getChar(), "!="))
@@ -474,6 +511,18 @@ void EqualityExpr::Emit() {
 void RelationalExpr::Emit() {
         left->Emit();
         right->Emit();
+        if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
+        {
+            int offset = ((FieldAccess*)left)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            left->loc = codegen.GenLoad(tmpThis, offset);
+        }
+        if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+        {
+            int offset = ((FieldAccess*)right)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            right->loc = codegen.GenLoad(tmpThis, offset);
+        }
         if(!strcmp(op->getChar(), ">="))
         {
             Location *loc1 = codegen.GenBinaryOp("<", right->loc, left->loc);
@@ -501,12 +550,30 @@ void ArithmeticExpr::Emit() {
     if(left == nullptr)
     {
         right->Emit();
+        if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+        {
+            int offset = ((FieldAccess*)right)->offset;
+            Location *tmpThis = new Location(fpRelative, 0, "this");
+            right->loc = codegen.GenLoad(tmpThis, offset);
+        }
         Location *loc1 = codegen.GenLoadConstant(0);
         loc = codegen.GenBinaryOp("-", loc1, right->loc);
         return;
     }
     left->Emit();
     right->Emit();
+    if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
+    {
+        int offset = ((FieldAccess*)left)->offset;
+        Location *tmpThis = new Location(fpRelative, 0, "this");
+        left->loc = codegen.GenLoad(tmpThis, offset);
+    }
+    if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
+    {
+        int offset = ((FieldAccess*)right)->offset;
+        Location *tmpThis = new Location(fpRelative, 0, "this");
+        right->loc = codegen.GenLoad(tmpThis, offset);
+    }
 
     Location* lLoc = left->loc;
     Location* rLoc = right->loc;

@@ -205,8 +205,12 @@ class FieldAccess : public LValue
     Identifier *field;
     
   public:
+    int offset;
     FieldAccess(Expr *base, Identifier *field); //ok to pass NULL base
     Type* CheckAndComputeResultType();
+    bool hasBase(){return (base!=nullptr);}
+    Expr* getBase(){return base;}
+    Identifier* getField(){return field;}
     void Emit();
 };
 

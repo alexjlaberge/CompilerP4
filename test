@@ -1,18 +1,27 @@
 
-int main(int d, int e, int f)
+class A
 {
 	int a;
 	int b;
-	int c;
-
-	a = c + 2 + b * 3 + 4;
-	b = c + a;
-	c = c * c / c + a;
+	int setA(int pA)
 	{
-		int a;
-		int b;
-		int c;
+		b = a;
+		a = b * a * b * a;
+		a = pA;
+		return a;
+
 	}
-	return a;
+	int getA()
+	{
+		return a;
+	}
+}
+
+int main(int d, int e, int f)
+{
+	A a;
+	a = New(A);
+	a.setA(1);
+	Print(a.getA());
 }
 
