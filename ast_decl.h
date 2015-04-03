@@ -112,6 +112,7 @@ class FnDecl : public Decl
     
   public:
     int size;
+    int offset;
     FnDecl(Identifier *name, Type *returnType, List<VarDecl*> *formals);
     void SetFunctionBody(Stmt *b);
     void Check();

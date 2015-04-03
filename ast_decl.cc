@@ -251,12 +251,15 @@ void ClassDecl::Emit() {
         //Generate V-Table
         //char *a = (char*)malloc(50);
         List<const char*> *m = new List<const char*>;
+        int curr = 0;
         for(int i = 0; i < members->NumElements(); i++)
         {
             //char *a = (char*)malloc(50);
 
             if(members->Nth(i)->IsFnDecl())
             {
+                ((FnDecl*)members->Nth(i))->offset = curr;
+                curr = curr + 4;
                 char *a = (char*)malloc(50);
 
                 sprintf(a, "_%s.%s", GetName(), members->Nth(i)->GetName());
@@ -303,6 +306,7 @@ void FnDecl::Emit() {
         int frameSize = vars + diff;
         func->SetFrameSize(frameSize);
         codegen.GenEndFunc();
+        codegen.newSpace = 0;
 }
 
 void InterfaceDecl::Emit() {

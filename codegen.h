@@ -39,6 +39,7 @@ class CodeGenerator {
            // are shifted up by 4.)  First global is at offset 0 from global
            // pointer, all subsequent at +4, +8, etc.
            // Conveniently, all vars are 4 bytes in size for code generation
+    int newSpace;
     static const int OffsetToFirstLocal = -8,
                      OffsetToFirstParam = 4,
                      OffsetToFirstGlobal = 0;

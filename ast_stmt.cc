@@ -220,6 +220,10 @@ void PrintStmt::Emit() {
         for(int i = 0; i < args->NumElements(); i++)
         {
             args->Nth(i)->Emit();
+            if(dynamic_cast<ArrayAccess*>(args->Nth(i)))
+            {
+                args->Nth(i)->loc = codegen.GenLoad(args->Nth(i)->loc);
+            }
             if(args->Nth(i)->CheckAndComputeResultType() == Type::boolType)
             {
                 codegen.GenBuiltInCall(PrintBool, args->Nth(i)->loc, nullptr);

@@ -1,27 +1,26 @@
-
-class A
+int main()
 {
-	int a;
-	int b;
-	int setA(int pA)
-	{
-		b = a;
-		a = b * a * b * a;
-		a = pA;
-		return a;
-
-	}
-	int getA()
-	{
-		return a;
-	}
+	int[] a;
+	a = NewArray(3,int);
+	a[0] = 1;
+	a[1] = 2;
+	a[2] = 3;
+	Print(a[0]);
+	Print(a[1]);
+	Print(a[2]);
+	return 0;
 }
 
-int main(int d, int e, int f)
+int v()
 {
-	A a;
-	a = New(A);
-	a.setA(1);
-	Print(a.getA());
+	int[] a;
+	a = NewArray(3,int);
+	a[0] = 1;
+	a[1] = 2;
+	a[2] = 3;
+	Print(a[0]);
+	Print(a[1]);
+	Print(a[2]);
+	return 0;
 }
 
