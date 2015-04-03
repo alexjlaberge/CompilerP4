@@ -35,6 +35,7 @@ class Program : public Node
 class Stmt : public Node
 {
   public:
+     int startingOffset;
      Stmt() : Node() {}
      Stmt(yyltype loc) : Node(loc) {}
      virtual size_t localSpaceRequired();
@@ -63,6 +64,7 @@ class ConditionalStmt : public Stmt
     Stmt *body;
   
   public:
+    Stmt* getBody(){return body;}
     ConditionalStmt(Expr *testExpr, Stmt *body);
     void Check();
 };

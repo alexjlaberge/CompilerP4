@@ -406,7 +406,7 @@ void FieldAccess::Emit() {
         //TODO
         if(base == nullptr)
         {
-            int location = FindDecl(field)->currLocation;
+            int location = ((VarDecl*)FindDecl(field))->offset;
             loc = new Location(fpRelative, location, field->GetName());
         }
 

@@ -43,21 +43,6 @@ void StmtBlock::Check() {
     nodeScope = new Scope();
     decls->DeclareAll(nodeScope);
     decls->CheckAll();
-    FnDecl* parentFn;
-    Node* parents = parent;
-    while(!dynamic_cast<FnDecl*>(parents))
-    {
-        parents = parent->GetParent();
-    }
-    parentFn = dynamic_cast<FnDecl*>(parents);
-    for(int i = 0; i < decls->NumElements(); i++)
-    {
-        //cout << decls->Nth(i)->GetName() <<  " "<< parentFn->currLocation << endl; 
-        Location *l = new Location(fpRelative, parentFn->currLocation, decls->Nth(i)->GetName());
-        decls->Nth(i)->currLocation = parentFn->currLocation;
-        decls->Nth(i)->setLocation(l);
-        parentFn->currLocation = parentFn->currLocation - 4;
-    }
     stmts->CheckAll();
 }
 
@@ -148,6 +133,25 @@ void Program::Emit() {
 void StmtBlock::Emit() {
         for(int i = 0; i < decls->NumElements(); i++)
             decls->Nth(i)->Emit();
+        FnDecl* parentFn;
+        Node* parents = parent;
+        while(!dynamic_cast<FnDecl*>(parents))
+        {
+            parents = parents->GetParent();
+        }
+        parentFn = dynamic_cast<FnDecl*>(parents);
+        int curr = -8 - (codegen.newSpace*4);
+        for(int i = 0; i < decls->NumElements(); i++)
+        {
+            //cout << decls->Nth(i)->GetName() <<  " "<< parentFn->currLocation << endl; 
+            Location *l = new Location(fpRelative, parentFn->currLocation, decls->Nth(i)->GetName());
+            decls->Nth(i)->currLocation = parentFn->currLocation;
+            decls->Nth(i)->setLocation(l);
+            decls->Nth(i)->offset = curr;
+            curr = curr - 4;
+            parentFn->currLocation = parentFn->currLocation - 4;
+        }
+        codegen.newSpace += decls->NumElements();
         for(int i = 0; i < stmts->NumElements(); i++)
             stmts->Nth(i)->Emit();
 }
@@ -160,6 +164,14 @@ int StmtBlock::getNumVars()
         if(dynamic_cast<StmtBlock*>(stmts->Nth(i)))
         {
             t += ((StmtBlock*)stmts->Nth(i))->getNumVars();
+        }
+        if(dynamic_cast<ConditionalStmt*>(stmts->Nth(i)))
+        {
+            Stmt* a = ((ConditionalStmt*)stmts->Nth(i))->getBody();
+            if(dynamic_cast<StmtBlock*>(a))
+            {
+                t += ((StmtBlock*)a)->getNumVars();
+            }
         }
     }
     return t;

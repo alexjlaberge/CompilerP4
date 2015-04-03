@@ -192,10 +192,12 @@ void FnDecl::Check() {
     {
         Location *l = new Location(fpRelative, curr, formals->Nth(i)->GetName());
         formals->Nth(i)->setLocation(l);
+        formals->Nth(i)->offset = curr;
         curr = curr + 4;
     }
     if (body)
     {
+       body->startingOffset = -8;
 	   body->Check();
     }
 }
@@ -299,6 +301,7 @@ void FnDecl::Emit() {
         int end = codegen.getTempNum();
         int diff = end - start;
         diff = diff * 4;
+        //cout << "DIFF: " << diff << endl;
         int vars = 0;
         if(dynamic_cast<StmtBlock*>(body))
             vars = ((StmtBlock*)body)->getNumVars();
