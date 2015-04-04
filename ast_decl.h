@@ -80,7 +80,7 @@ class ClassDecl : public Decl
               List<NamedType*> *implements, List<Decl*> *members);
     void Check();
     bool IsClassDecl() { return true; }
-    Scope *PrepareScope();
+    virtual Scope *PrepareScope();
     List<InterfaceDecl*> *GetImplementedInterfaces() { return convImp; }
     bool IsCompatibleWith(Type *type);
     bool Implements(Type *intf);
@@ -136,6 +136,7 @@ class FnDecl : public Decl
     Type *GetReturnType() {return returnType; }
     List<VarDecl*> *GetFormals() { return formals; }
     virtual void Emit();
+    virtual Scope *PrepareScope();
 };
 
 #endif

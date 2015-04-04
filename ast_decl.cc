@@ -116,6 +116,16 @@ Scope *ClassDecl::PrepareScope()
             ReportError::IdentifierNotDeclared(implements->Nth(i)->GetId(), LookingForInterface);
     }
     members->DeclareAll(nodeScope);
+
+    for (int i = 0; i < members->NumElements(); i++)
+    {
+            FnDecl *fn = dynamic_cast<FnDecl*>(members->Nth(i));
+            if (fn)
+            {
+                    fn->PrepareScope();
+            }
+    }
+
     return nodeScope;
 }
 
@@ -316,5 +326,18 @@ void InterfaceDecl::Emit() {
         /* TODO */
 }
 
+Scope *FnDecl::PrepareScope()
+{
+        if (nodeScope)
+        {
+                return nodeScope;
+        }
 
+        nodeScope = new Scope();
 
+        for (int i = 0; i < formals->NumElements(); i++) {
+                nodeScope->Declare(formals->Nth(i));
+        }
+
+        return nodeScope;
+}

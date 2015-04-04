@@ -7,6 +7,7 @@
 #include "ast_decl.h"
 #include <string.h>
 #include "errors.h"
+#include <cassert>
 
 Type *EmptyExpr::CheckAndComputeResultType() { return Type::voidType; } 
 
@@ -298,13 +299,19 @@ void StringConstant::Emit() {
 }
 
 void ArrayAccess::Emit() {
-        /* TODO */
-        base->Emit();
         subscript->Emit();
+
+        Location *elem = subscript->loc;
+        if (dynamic_cast<ArrayAccess*>(subscript) != nullptr)
+        {
+                elem = codegen.GenLoad(elem);
+        }
+
+        base->Emit();
         Location *zero = codegen.GenLoadConstant(0);
-        Location *check1 = codegen.GenBinaryOp("<", subscript->loc, zero);
+        Location *check1 = codegen.GenBinaryOp("<", elem, zero);
         Location *size = codegen.GenLoad(base->loc, -4);
-        Location *tmp1 = codegen.GenBinaryOp("<", subscript->loc, size);
+        Location *tmp1 = codegen.GenBinaryOp("<", elem, size);
         Location *tmp2 = codegen.GenBinaryOp("==", tmp1, zero);
         Location *check2 = codegen.GenBinaryOp("||", check1, tmp2);
         char* go = codegen.NewLabel();
@@ -315,7 +322,7 @@ void ArrayAccess::Emit() {
         codegen.GenBuiltInCall(Halt, nullptr, nullptr);
         codegen.GenLabel(go);
         Location *four = codegen.GenLoadConstant(4);
-        Location *position = codegen.GenBinaryOp("*", four, subscript->loc);
+        Location *position = codegen.GenBinaryOp("*", four, elem);
         Location *calculatedPos = codegen.GenBinaryOp("+", base->loc, position);
         loc = calculatedPos;
 
@@ -421,17 +428,25 @@ void FieldAccess::Emit() {
         //TODO
         if(base == nullptr)
         {
-            //cout << field->GetName() << endl;
-            int location = ((VarDecl*)FindDecl(field))->offset;
-            if(((VarDecl*)FindDecl(field))->isGP)
-                loc = new Location(gpRelative, location, field->GetName());
-            else
-                loc = new Location(fpRelative, location, field->GetName());
-        }
+            VarDecl *var = dynamic_cast<VarDecl*>(FindDecl(field));
+            assert(var);
 
+            int location = var->offset;
+
+            if(var->isGP)
+            {
+                loc = new Location(gpRelative, location, field->GetName());
+            }
+            else
+            {
+                loc = new Location(fpRelative, location, field->GetName());
+            }
+        }
         else
         {
-            offset = ((VarDecl*)FindDecl(field))->offset;
+                VarDecl *var = dynamic_cast<VarDecl*>(FindDecl(field));
+                assert(var);
+            offset = var->offset;
             base->Emit();
             Location *tLoc;
             if(dynamic_cast<This*>(base))
@@ -475,10 +490,12 @@ void AssignExpr::Emit() {
         left->isLeft = true;
         left->Emit();
         right->Emit();
+
         if(dynamic_cast<ArrayAccess*>(right))
         {
             right->loc = codegen.GenLoad(right->loc);
         }
+
         if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
         {
             Expr* base = ((FieldAccess*)right)->getBase();
@@ -496,6 +513,7 @@ void AssignExpr::Emit() {
                 right->loc = codegen.GenLoad(tmpThis, offset);
             }
         }
+
         if(dynamic_cast<ArrayAccess*>(left))
         {
             codegen.GenStore(left->loc, right->loc);
@@ -503,11 +521,13 @@ void AssignExpr::Emit() {
         else if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
         {
             int offset = ((FieldAccess*)left)->offset;
-            Location *tmpThis = new Location(fpRelative, 0, "this");
-            codegen.GenStore(tmpThis, right->loc, offset);
+            //Location *tmpThis = new Location(fpRelative, 0, "this");
+            codegen.GenStore(left->loc, right->loc, offset);
         }
         else
+        {
             codegen.GenAssign(left->loc, right->loc);
+        }
 }
 
 void LogicalExpr::Emit() {
