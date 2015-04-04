@@ -24,6 +24,7 @@ class Location;
 class Expr : public Stmt 
 {
   public:
+    bool isLeft;
     Expr(yyltype loc) : Stmt(loc) {}
     Expr() : Stmt() {}
     void Check() { CheckAndComputeResultType(); }

@@ -28,7 +28,11 @@ size_t Type::getSize() {
 }
 
 size_t NamedType::getSize() {
-        return 4;
+        Decl* d = FindDecl(id);
+        if(dynamic_cast<ClassDecl*>(d))
+            return ((ClassDecl*)d)->getSize();
+        else
+            return 0;
 }
 
 size_t ArrayType::getSize() {

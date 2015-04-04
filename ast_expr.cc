@@ -326,8 +326,8 @@ void ArrayAccess::Emit() {
 void NewExpr::Emit() {
         //Gen Location for named type
         Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
-        Location *four = codegen.GenLoadConstant(4);
-        loc = codegen.GenBuiltInCall(Alloc, four, nullptr);
+        Location *classSize = codegen.GenLoadConstant(cType->getSize());
+        loc = codegen.GenBuiltInCall(Alloc, classSize, nullptr);
         Location *tmp = codegen.GenTempVariable();
         codegen.GenAssign(tmp, className);
         codegen.GenStore(loc, tmp);
@@ -374,7 +374,7 @@ void Call::Emit() {
          */
         if(base == nullptr)
         {
-            for(int i = 0; i < actuals->NumElements(); i++)
+            for(int i = (actuals->NumElements() - 1); i >= 0; i--)
             {
                 actuals->Nth(i)->Emit();
                 codegen.GenPushParam(actuals->Nth(i)->loc);
@@ -435,16 +435,35 @@ void FieldAccess::Emit() {
                 assert(var);
             offset = var->offset;
             base->Emit();
+            Location *tLoc;
+            if(dynamic_cast<This*>(base))
             loc = base->loc;
-            /*if(dynamic_cast<This*>(base))
+            if(dynamic_cast<This*>(base))
             {
-                Location* tLoc = new Location(fpRelative, 0, "this");
-                loc = codegen.GenLoad(tLoc, offset);
+                tLoc = new Location(fpRelative, offset, "this");
+                if(!isLeft)
+                {
+                    loc = codegen.GenLoad(tLoc, offset);
+                }
+                else
+                {
+                    loc = tLoc;
+                }
             }
             else
             {
-                Location *baseLoc = codegen.GenLoad(base->loc, offset);
-            }*/
+                int baseOffset = base->loc->GetOffset();
+                if(base->loc->GetSegment() == fpRelative)
+                {    
+                    tLoc = new Location(fpRelative, baseOffset, "this");
+                    //tLoc = codegen.GenLoad(tLoc, offset);
+                }   
+                else
+                {
+                    tLoc = base->loc;
+                }
+                loc = codegen.GenLoad(tLoc, offset);
+            }
 
         }
 
@@ -455,6 +474,7 @@ void LValue::Emit() {
 }
 
 void AssignExpr::Emit() {
+        left->isLeft = true;
         left->Emit();
         right->Emit();
 
