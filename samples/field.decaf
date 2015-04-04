@@ -1,0 +1,17 @@
+class Hey
+{
+        int a;
+
+        void set(Hey b)
+        {
+                b.a = 2;
+        }
+}
+
+void main()
+{
+        Hey c;
+        Hey d;
+
+        c.set(d);
+}

@@ -7,6 +7,7 @@
 #include "ast_decl.h"
 #include <string.h>
 #include "errors.h"
+#include <cassert>
 
 Type *EmptyExpr::CheckAndComputeResultType() { return Type::voidType; } 
 
@@ -414,16 +415,25 @@ void FieldAccess::Emit() {
         //TODO
         if(base == nullptr)
         {
-            int location = ((VarDecl*)FindDecl(field))->offset;
-            if(((VarDecl*)FindDecl(field))->isGP)
-                loc = new Location(gpRelative, location, field->GetName());
-            else
-                loc = new Location(fpRelative, location, field->GetName());
-        }
+            VarDecl *var = dynamic_cast<VarDecl*>(FindDecl(field));
+            assert(var);
 
+            int location = var->offset;
+
+            if(var->isGP)
+            {
+                loc = new Location(gpRelative, location, field->GetName());
+            }
+            else
+            {
+                loc = new Location(fpRelative, location, field->GetName());
+            }
+        }
         else
         {
-            offset = ((VarDecl*)FindDecl(field))->offset;
+                VarDecl *var = dynamic_cast<VarDecl*>(FindDecl(field));
+                assert(var);
+            offset = var->offset;
             base->Emit();
             loc = base->loc;
             /*if(dynamic_cast<This*>(base))
@@ -447,10 +457,12 @@ void LValue::Emit() {
 void AssignExpr::Emit() {
         left->Emit();
         right->Emit();
+
         if(dynamic_cast<ArrayAccess*>(right))
         {
             right->loc = codegen.GenLoad(right->loc);
         }
+
         if(dynamic_cast<FieldAccess*>(right) && ((FieldAccess*)right)->getBase())
         {
             Expr* base = ((FieldAccess*)right)->getBase();
@@ -468,6 +480,7 @@ void AssignExpr::Emit() {
                 right->loc = codegen.GenLoad(tmpThis, offset);
             }
         }
+
         if(dynamic_cast<ArrayAccess*>(left))
         {
             codegen.GenStore(left->loc, right->loc);
@@ -475,11 +488,13 @@ void AssignExpr::Emit() {
         else if(dynamic_cast<FieldAccess*>(left) && ((FieldAccess*)left)->getBase())
         {
             int offset = ((FieldAccess*)left)->offset;
-            Location *tmpThis = new Location(fpRelative, 0, "this");
-            codegen.GenStore(tmpThis, right->loc, offset);
+            //Location *tmpThis = new Location(fpRelative, 0, "this");
+            codegen.GenStore(left->loc, right->loc, offset);
         }
         else
+        {
             codegen.GenAssign(left->loc, right->loc);
+        }
 }
 
 void LogicalExpr::Emit() {
