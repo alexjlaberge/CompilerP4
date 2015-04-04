@@ -263,12 +263,12 @@ void PrintStmt::Emit() {
 
 void ReturnStmt::Emit() {
         expr->Emit();
-        if(dynamic_cast<FieldAccess*>(expr) && ((FieldAccess*)expr)->getBase())
+        /*if(dynamic_cast<FieldAccess*>(expr) && ((FieldAccess*)expr)->getBase())
         {
             int offset = ((FieldAccess*)expr)->offset;
             Location *tmpThis = new Location(fpRelative, 0, "this");
             expr->loc = codegen.GenLoad(tmpThis, offset);
-        }
+        }*/
         codegen.GenReturn(expr->loc);
 }
 

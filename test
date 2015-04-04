@@ -1,8 +1,49 @@
 int[] boscoe;
+Cow sasha;
+class Cow
+{
+	bool hasSpots;
+	int numSpots;
+	Cow parent;
+	void initCow()
+	{
+		hasSpots = true;
+	}
+	void setSpots(int a)
+	{
+		numSpots = a;
+	}
+	int getSpots()
+	{
+		return numSpots * numSpots;
+	}
+	bool geneticSpots()
+	{
+		return parent.hasSpots;
+		return sasha.hasSpots;
+	}
+}
 
 int main()
 {
+	int a;
+	int b;
+	int c;
+	Cow betsy;
 
+	a = 1;
+	b = 1;
+	c = 1;
+	betsy = New(Cow);
+	//betsy.initCow();
+	//betsy.setSpots(a);
+	//Print(betsy.getSpots());
+	//Print(betsy.geneticSpots());
+
+	c = a * b + c;
+	boscoe = NewArray(10, int);
+	boscoe[1] = boscoe[1] + v(a,b,c);
+	return v(a,b,c);
 }
 
 int v(int a, int b, int c)

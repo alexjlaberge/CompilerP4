@@ -87,6 +87,18 @@ class ClassDecl : public Decl
     Type *GetDeclaredType() { return cType; } //  used by "this"
     const char *GetClassName() { return id->GetName(); }
     virtual void Emit();
+    int getSize()
+    {
+        int temp = 0;
+        for(int i = 0; i < members->NumElements(); i++)
+        {
+            if(dynamic_cast<VarDecl*>(members->Nth(i)))
+            {
+                temp++;
+            }
+        }
+        return (4* temp) + 4;
+    }
 };
 
 class InterfaceDecl : public Decl 
