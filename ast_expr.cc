@@ -299,13 +299,19 @@ void StringConstant::Emit() {
 }
 
 void ArrayAccess::Emit() {
-        /* TODO */
-        base->Emit();
         subscript->Emit();
+
+        Location *elem = subscript->loc;
+        if (dynamic_cast<ArrayAccess*>(subscript) != nullptr)
+        {
+                elem = codegen.GenLoad(elem);
+        }
+
+        base->Emit();
         Location *zero = codegen.GenLoadConstant(0);
-        Location *check1 = codegen.GenBinaryOp("<", subscript->loc, zero);
+        Location *check1 = codegen.GenBinaryOp("<", elem, zero);
         Location *size = codegen.GenLoad(base->loc, -4);
-        Location *tmp1 = codegen.GenBinaryOp("<", subscript->loc, size);
+        Location *tmp1 = codegen.GenBinaryOp("<", elem, size);
         Location *tmp2 = codegen.GenBinaryOp("==", tmp1, zero);
         Location *check2 = codegen.GenBinaryOp("||", check1, tmp2);
         char* go = codegen.NewLabel();
@@ -316,7 +322,7 @@ void ArrayAccess::Emit() {
         codegen.GenBuiltInCall(Halt, nullptr, nullptr);
         codegen.GenLabel(go);
         Location *four = codegen.GenLoadConstant(4);
-        Location *position = codegen.GenBinaryOp("*", four, subscript->loc);
+        Location *position = codegen.GenBinaryOp("*", four, elem);
         Location *calculatedPos = codegen.GenBinaryOp("+", base->loc, position);
         loc = calculatedPos;
 
