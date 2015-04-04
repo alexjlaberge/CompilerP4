@@ -483,19 +483,39 @@ void LogicalExpr::Emit() {
         if(left == nullptr)
         {
             right->Emit();
+            if(dynamic_cast<ArrayAccess*>(right))
+            {
+                right->loc = codegen.GenLoad(right->loc);
+            }
             Location *loc1 = codegen.GenLoadConstant(0);
             loc = codegen.GenBinaryOp("==", right->loc, loc1);
             return;
         }
         left->Emit();
+        if(dynamic_cast<ArrayAccess*>(left))
+        {
+            left->loc = codegen.GenLoad(left->loc);
+        }
         right->Emit();
+        if(dynamic_cast<ArrayAccess*>(right))
+        {
+            right->loc = codegen.GenLoad(right->loc);
+        }
         loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
 
 }
 
 void EqualityExpr::Emit() {
         left->Emit();
+        if(dynamic_cast<ArrayAccess*>(left))
+        {
+            left->loc = codegen.GenLoad(left->loc);
+        }
         right->Emit();
+        if(dynamic_cast<ArrayAccess*>(right))
+        {
+            right->loc = codegen.GenLoad(right->loc);
+        }
         if(!strcmp(op->getChar(), "=="))
             loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
         else if(!strcmp(op->getChar(), "!="))
@@ -508,7 +528,15 @@ void EqualityExpr::Emit() {
 
 void RelationalExpr::Emit() {
         left->Emit();
+        if(dynamic_cast<ArrayAccess*>(left))
+        {
+            left->loc = codegen.GenLoad(left->loc);
+        }
         right->Emit();
+        if(dynamic_cast<ArrayAccess*>(right))
+        {
+            right->loc = codegen.GenLoad(right->loc);
+        }
         if(!strcmp(op->getChar(), ">="))
         {
             Location *loc1 = codegen.GenBinaryOp("<", right->loc, left->loc);
@@ -536,12 +564,24 @@ void ArithmeticExpr::Emit() {
     if(left == nullptr)
     {
         right->Emit();
+        if(dynamic_cast<ArrayAccess*>(right))
+        {
+            right->loc = codegen.GenLoad(right->loc);
+        }
         Location *loc1 = codegen.GenLoadConstant(0);
         loc = codegen.GenBinaryOp("-", loc1, right->loc);
         return;
     }
     left->Emit();
+    if(dynamic_cast<ArrayAccess*>(left))
+    {
+        left->loc = codegen.GenLoad(left->loc);
+    }
     right->Emit();
+    if(dynamic_cast<ArrayAccess*>(right))
+    {
+        right->loc = codegen.GenLoad(right->loc);
+    }
 
     Location* lLoc = left->loc;
     Location* rLoc = right->loc;
