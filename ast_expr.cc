@@ -453,7 +453,7 @@ void FieldAccess::Emit() {
             loc = base->loc;
             if(dynamic_cast<This*>(base))
             {
-                tLoc = new Location(fpRelative, offset, "this");
+                tLoc = new Location(fpRelative, offset, "this"); //THIS LINE NEEDS TO BE FIXED.
                 if(!isLeft)
                 {
                     loc = codegen.GenLoad(tLoc, offset);
@@ -469,13 +469,14 @@ void FieldAccess::Emit() {
                 if(base->loc->GetSegment() == fpRelative)
                 {    
                     tLoc = new Location(fpRelative, baseOffset, "this");
+                    //tLoc = codegen.GenLoad(tLoc, baseOffset);
                     //tLoc = codegen.GenLoad(tLoc, offset);
                 }   
                 else
                 {
                     tLoc = base->loc;
                 }
-                loc = codegen.GenLoad(tLoc, offset);
+                loc = codegen.GenLoad(base->loc, offset);
             }
 
         }

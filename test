@@ -35,11 +35,11 @@ int main()
 	b = 1;
 	c = 1;
 	betsy = New(Cow);
-	betsy.initCow();
-	sasha.initCow();
-	betsy.setSpots(a);
-	Print(betsy.getSpots());
-	Print(betsy.geneticSpots());
+	//betsy.initCow();
+	//sasha.initCow();
+	//betsy.setSpots(a);
+	//Print(betsy.getSpots());
+	//Print(betsy.geneticSpots());
 
 	c = a * b + c;
 	boscoe = NewArray(10, int);
