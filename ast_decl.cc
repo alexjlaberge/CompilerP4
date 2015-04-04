@@ -197,7 +197,11 @@ void FnDecl::Check() {
     nodeScope = new Scope();
     formals->DeclareAll(nodeScope);
     CheckPrototype();
-    int curr = 4;
+    int curr;
+    if(dynamic_cast<ClassDecl*>(parent))
+        curr = 8;
+    else
+        curr = 4;
     for(int i = 0; i < formals->NumElements(); i++)
     {
         Location *l = new Location(fpRelative, curr, formals->Nth(i)->GetName());

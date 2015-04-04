@@ -31,6 +31,7 @@ void Program::Check() {
             Location *l = new Location(gpRelative, curr, decls->Nth(i)->GetName());
             ((VarDecl*)decls->Nth(i))->setLocation(l);
             ((VarDecl*)decls->Nth(i))->isGP = true;
+            ((VarDecl*)decls->Nth(i))->offset = curr;
             curr += 4;
 
         }

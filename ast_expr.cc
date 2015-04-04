@@ -435,6 +435,7 @@ void FieldAccess::Emit() {
 
             if(var->isGP)
             {
+                //cout << "FIELD " << field->GetName() << endl;
                 loc = new Location(gpRelative, location, field->GetName());
             }
             else
@@ -453,7 +454,7 @@ void FieldAccess::Emit() {
             loc = base->loc;
             if(dynamic_cast<This*>(base))
             {
-                tLoc = new Location(fpRelative, offset, "this"); //THIS LINE NEEDS TO BE FIXED.
+                tLoc = new Location(fpRelative, 4, "this"); //THIS LINE NEEDS TO BE FIXED.
                 if(!isLeft)
                 {
                     loc = codegen.GenLoad(tLoc, offset);
