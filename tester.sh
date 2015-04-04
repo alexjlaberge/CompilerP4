@@ -12,30 +12,35 @@ function spim_run() {
         fi
 }
 
+function dcc_run() {
+        ./dcc < ${1}.decaf > ${1}.s 2> /dev/null
+        spim_run ${1}
+        cp ${1}.out ${CURRENT_OUTPUT}
+
+        ./solution/dcc < ${1}.decaf > ${1}.s 2> /dev/null
+        spim_run ${1}
+}
+
 make
+
+if [ ! -z "${1}" ]
+then
+        input="samples/${1}"
+        dcc_run ${input}
+        diff -aw ${input}.out ${CURRENT_OUTPUT}
+        exit $?
+fi
 
 for input in ${INFILES}
 do
         echo -ne "Testing ${input}..."
 
-        # First, test ours and get the output in memory
-        ./dcc < ${input}.decaf > ${input}.s 2> /dev/null
-        spim_run ${input}
-        cp ${input}.out ${CURRENT_OUTPUT}
-
-        ./solution/dcc < ${input}.decaf > ${input}.s 2> /dev/null
-        spim_run ${input}
+        dcc_run ${input}
 
         diff -awq ${input}.out ${CURRENT_OUTPUT} && echo "PASS"
         if [ ! "$?" -eq 0 ]
         then
                 FAILED="${FAILED} ${input}"
-        fi
-
-        if [ "samples/${1}" == ${input} ]
-        then
-                diff -aw ${input}.out ${CURRENT_OUTPUT}
-                exit 1
         fi
 done
 
