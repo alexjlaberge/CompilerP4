@@ -392,20 +392,27 @@ void Call::Emit() {
             }
             codegen.GenPopParams(4*actuals->NumElements());
         }
-        else
+        else //ACall
         {
             //Calculate func offset
             int offset = 0;
             field->Emit();
-
+            base->Emit();
             //Load the base
             Location *tmp = new Location(fpRelative, 0, field->GetName());
             Location *classLocation = codegen.GenLoad(tmp, offset);
             //Load from base + offset
             Location *fnLocation = codegen.GenLoad(classLocation, offset);
             //Set loc to be the call
+            for(int i = actuals->NumElements()-1; i >= 0; i--)
+            {
+                actuals->Nth(i)->Emit();
+                codegen.GenPushParam(actuals->Nth(i)->loc);
+            }
+            codegen.GenPushParam(base->loc);
             loc = codegen.GenACall(fnLocation,
                         CheckAndComputeResultType() != Type::voidType);
+            codegen.GenPopParams(actuals->NumElements() * 4 + 4);
         }
 
 }
