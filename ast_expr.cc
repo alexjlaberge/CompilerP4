@@ -131,7 +131,9 @@ Type* This::CheckAndComputeResultType() {
    return enclosingClass->GetDeclaredType();
 }
 
-   
+void This::Emit() {
+        loc = new Location(fpRelative, 0, "this");
+}
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
     (base=b)->SetParent(this); 
@@ -425,6 +427,8 @@ void FieldAccess::Emit() {
             offset = ((VarDecl*)FindDecl(field))->offset;
             base->Emit();
             Location *tLoc;
+            if(dynamic_cast<This*>(base))
+            loc = base->loc;
             if(dynamic_cast<This*>(base))
             {
                 tLoc = new Location(fpRelative, offset, "this");
