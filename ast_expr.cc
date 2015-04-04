@@ -371,6 +371,11 @@ void Call::Emit() {
          */
         if(base == nullptr)
         {
+            for(int i = 0; i < actuals->NumElements(); i++)
+            {
+                actuals->Nth(i)->Emit();
+                codegen.GenPushParam(actuals->Nth(i)->loc);
+            }
             char* tmp = (char*)malloc(50);
             sprintf(tmp, "_%s", field->GetName());
             if(!strcmp(field->GetName(), "main"))
@@ -383,6 +388,7 @@ void Call::Emit() {
                 loc = codegen.GenLCall(tmp,
                         CheckAndComputeResultType() != Type::voidType);
             }
+            codegen.GenPopParams(4*actuals->NumElements());
         }
         else
         {
