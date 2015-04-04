@@ -100,6 +100,7 @@ class IfStmt : public ConditionalStmt
     Stmt *elseBody;
   
   public:
+    Stmt *getElse() {return elseBody;}
     IfStmt(Expr *test, Stmt *thenBody, Stmt *elseBody);
     void Check();
     virtual void Emit();

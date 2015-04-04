@@ -30,6 +30,8 @@ void Program::Check() {
         {
             Location *l = new Location(gpRelative, curr, decls->Nth(i)->GetName());
             ((VarDecl*)decls->Nth(i))->setLocation(l);
+            ((VarDecl*)decls->Nth(i))->isGP = true;
+
         }
     }
 }
@@ -168,6 +170,14 @@ int StmtBlock::getNumVars()
         if(dynamic_cast<ConditionalStmt*>(stmts->Nth(i)))
         {
             Stmt* a = ((ConditionalStmt*)stmts->Nth(i))->getBody();
+            if(dynamic_cast<StmtBlock*>(a))
+            {
+                t += ((StmtBlock*)a)->getNumVars();
+            }
+        }
+        if(dynamic_cast<IfStmt*>(stmts->Nth(i)))
+        {
+            Stmt* a = ((IfStmt*)stmts->Nth(i))->getElse();
             if(dynamic_cast<StmtBlock*>(a))
             {
                 t += ((StmtBlock*)a)->getNumVars();

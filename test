@@ -1,3 +1,5 @@
+int[] boscoe;
+
 int main()
 {
 
@@ -5,9 +7,13 @@ int main()
 
 int v(int a, int b, int c)
 {
+	int[] arr;
+	
 	int d;
 	int e;
 	int f;
+	boscoe = NewArray(3, int);
+	arr = NewArray(3,int);
 	f = 2 + e;
 	e = 3 + 4 + d + c;
 	if(a == 2)

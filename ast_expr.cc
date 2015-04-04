@@ -407,7 +407,10 @@ void FieldAccess::Emit() {
         if(base == nullptr)
         {
             int location = ((VarDecl*)FindDecl(field))->offset;
-            loc = new Location(fpRelative, location, field->GetName());
+            if(((VarDecl*)FindDecl(field))->isGP)
+                loc = new Location(gpRelative, location, field->GetName());
+            else
+                loc = new Location(fpRelative, location, field->GetName());
         }
 
         else
