@@ -1,4 +1,4 @@
-int[] boscoe;
+/*int[] boscoe;
 Cow sasha;
 class Cow
 {
@@ -25,32 +25,36 @@ class Cow
 		return parent.hasSpots;
 		return sasha.hasSpots;
 	}
-}
+}*/
 
 int main()
 {
-	int a;
-	int b;
+	string a;
+	string b;
 	int c;
-	Cow betsy;
+	//Cow betsy;
 
-	a = 1;
-	b = 1;
+	a = "bees";
+	b = "queues";
 	c = 1;
-	betsy = New(Cow);
+	if(a == b)
+	{
+		Print(a);
+	}
+	//betsy = New(Cow);
 	//betsy.initCow();
 	//sasha.initCow();
 	//betsy.setSpots(a);
 	//Print(betsy.getSpots());
 	//Print(betsy.geneticSpots());
 
-	c = a * b + c;
+	/*c = a * b + c;
 	boscoe = NewArray(10, int);
 	boscoe[1] = boscoe[1] + v(a,b,c);
-	return v(a,b,c);
+	return v(a,b,c);*/
 }
 
-int v(int a, int b, int c)
+/*int v(int a, int b, int c)
 {
 	int[] arr;
 	
@@ -72,5 +76,5 @@ int v(int a, int b, int c)
 		return z;
 	}
 	return c;
-}
+}*/
 

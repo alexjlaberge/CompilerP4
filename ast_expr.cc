@@ -578,6 +578,19 @@ void EqualityExpr::Emit() {
         {
             right->loc = codegen.GenLoad(right->loc);
         }
+        if(left->CheckAndComputeResultType() == Type::stringType)
+        {
+            if(!strcmp(op->getChar(), "=="))
+                loc = codegen.GenBuiltInCall(StringEqual, left->loc, right->loc);
+            else if(!strcmp(op->getChar(), "!="))
+            {
+                Location *loc1 = codegen.GenBuiltInCall(StringEqual, left->loc, right->loc);
+                Location *loc2 = codegen.GenLoadConstant(0);
+                loc = codegen.GenBinaryOp("==", loc1, loc2);
+            }
+            //loc = codegen.GenBuiltInCall(StringEqual, left->loc, right->loc);
+            return;
+        }
         if(!strcmp(op->getChar(), "=="))
             loc = codegen.GenBinaryOp(op->getChar(), left->loc, right->loc);
         else if(!strcmp(op->getChar(), "!="))
