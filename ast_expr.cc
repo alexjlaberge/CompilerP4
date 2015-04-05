@@ -679,6 +679,8 @@ void ReadIntegerExpr::Emit() {
 
 void NullConstant::Emit() {
         /* TODO */
+    temps = 1;
+    loc = codegen.GenLoadConstant(0);
 }
 
 
