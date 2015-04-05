@@ -414,11 +414,16 @@ void Call::Emit() {
             //Load from base + offset
             Location *fnLocation = codegen.GenLoad(classLocation, offset);
             //Set loc to be the call
-            for(int i = actuals->NumElements()-1; i >= 0; i--)
+
+            for(int i = 0; i < actuals->NumElements(); i++)
             {
                 actuals->Nth(i)->Emit();
+            }
+            for(int i = actuals->NumElements()-1; i >= 0; i--)
+            {
                 codegen.GenPushParam(actuals->Nth(i)->loc);
             }
+
             codegen.GenPushParam(base->loc);
             loc = codegen.GenACall(fnLocation,
                         CheckAndComputeResultType() != Type::voidType);
@@ -454,7 +459,7 @@ void FieldAccess::Emit() {
             base->Emit();
             Location *tLoc;
             if(dynamic_cast<This*>(base))
-            loc = base->loc;
+                loc = base->loc;
             if(dynamic_cast<This*>(base))
             {
                 tLoc = new Location(fpRelative, 4, "this"); //THIS LINE NEEDS TO BE FIXED.
@@ -480,7 +485,8 @@ void FieldAccess::Emit() {
                 {
                     tLoc = base->loc;
                 }
-                loc = codegen.GenLoad(base->loc, offset);
+                //loc = codegen.GenLoad(base->loc, offset);
+                loc = base->loc;
             }
 
         }
