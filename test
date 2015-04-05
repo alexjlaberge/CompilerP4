@@ -40,7 +40,10 @@ int main()
 	}
 	for(i = 0; i < 5; i = i + 1)
 	{
+		a[i].setNum(i);
+		a[i].getNum();
 		a[i].setPie(i);
+		a[i].getPie();
 	}
 	for(i = 0; i < 5; i = i + 1)
 	{
