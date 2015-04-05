@@ -380,9 +380,12 @@ void Call::Emit() {
          */
         if(base == nullptr)
         {
-            for(int i = (actuals->NumElements() - 1); i >= 0; i--)
+            for(int i = 0; i < actuals->NumElements(); i++)
             {
                 actuals->Nth(i)->Emit();
+            }
+            for(int i = (actuals->NumElements() - 1); i >= 0; i--)
+            {
                 codegen.GenPushParam(actuals->Nth(i)->loc);
             }
             char* tmp = (char*)malloc(50);
