@@ -6,6 +6,6 @@ make
 
 echo "Solution | Ours"
 
-./dcc -d tac < samples/${1}.decaf > ${CURRENT_OUTPUT} 2> /dev/null
+./dcc -d tac < samples/${1}.decaf > ${CURRENT_OUTPUT}
 ./solution/dcc -d tac < samples/${1}.decaf | \
         diff -aw - ${CURRENT_OUTPUT}
