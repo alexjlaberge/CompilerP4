@@ -1,6 +1,10 @@
-class A
+class B
 {
 	int a;
+}
+
+class A extends B
+{
 	int getA()
 	{
 		return a;

@@ -10,6 +10,8 @@
 #include "codegen.h"
   
 #include <set>
+
+ class FnDecl;
          
 Decl::Decl(Identifier *n) : Node(*n->GetLocation()) {
     Assert(n != NULL);
@@ -51,7 +53,46 @@ ClassDecl::ClassDecl(Identifier *n, NamedType *ex, List<NamedType*> *imp, List<D
     convImp = NULL;
 }
 
+List<const char*>* ClassDecl::getVTable()
+{
+    List<const char*> *myVTable = new List<const char*>();
+    if(extends != nullptr)
+    {
+        Decl* parentClass = FindDecl(extends->GetId());
+        if(dynamic_cast<ClassDecl*>(parentClass))
+        {
+            List<const char*> *parentVTable = ((ClassDecl*)parentClass)->getVTable();
+            for(int i = 0; i < parentVTable->NumElements(); i++)
+            {
+                myVTable->Append(parentVTable->Nth(i));
+            }
+        }
+    }
+    for(int i = 0; i < members->NumElements(); i++)
+    {
+        Decl* c = members->Nth(i);
+        if(dynamic_cast<FnDecl*>(c))
+        {
+            //((FnDecl*)members->Nth(i))->offset = curr;
+                //curr = curr + 4;
+                char *a = (char*)malloc(50);
+
+                sprintf(a, "_%s.%s", GetName(), members->Nth(i)->GetName());
+                //codegen.GenLabel(a);
+                //members->Nth(i)->Emit();
+                //printf("%s",a);
+
+                //m->Append(a);
+            myVTable->Append(a);
+        }
+    }
+    vTable = myVTable;
+    return vTable;
+
+}
+
 void ClassDecl::Check() {
+    List<const char*>* tmpV = getVTable();
     int curr = 4;
     for(int i = 0; i < members->NumElements(); i++)
     {
@@ -286,7 +327,7 @@ void ClassDecl::Emit() {
                 m->Append(a);
             }
         }
-        codegen.GenVTable(GetName(), m);
+        codegen.GenVTable(GetName(), vTable);
 }
 
 void FnDecl::Emit() {

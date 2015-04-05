@@ -74,6 +74,7 @@ class ClassDecl : public Decl
     List<InterfaceDecl*> *convImp;
     // NamedType matching with conv
     List<NamedType*> *interfaceDecl_to_namedType;
+    List<const char*> *vTable;
 
   public:
     ClassDecl(Identifier *name, NamedType *extends, 
@@ -87,6 +88,8 @@ class ClassDecl : public Decl
     Type *GetDeclaredType() { return cType; } //  used by "this"
     const char *GetClassName() { return id->GetName(); }
     virtual void Emit();
+    List<const char*>* getVTable();
+
     int getSize()
     {
         int temp = 0;

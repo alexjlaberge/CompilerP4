@@ -1,80 +1,52 @@
-/*int[] boscoe;
-Cow sasha;
-class Cow
+class Cow extends Animal
 {
+	int b;
+	void setNum(int p)
+	{
+		a = p;
+		b = p;
+	}
+	int getNum()
+	{
+		return a;
+		return b;
+	}
+}
+
+class Animal
+{
+	int a;
 	int q;
-	bool hasSpots;
-	int numSpots;
-	Cow parent;
-	void initCow()
+	int c;
+	int k;
+	int getPie()
 	{
-		hasSpots = true;
+		return k;
 	}
-	void setSpots(int a, int b, int c)
+	void setPie(int a)
 	{
-		numSpots = a;
-		numSpots = b;
-		numSpots = c;
+		this.a = a;
 	}
-	int getSpots()
-	{
-		return numSpots * numSpots;
-	}
-	bool geneticSpots()
-	{
-		return parent.hasSpots;
-		return sasha.hasSpots;
-	}
-}*/
+}
 
 int main()
 {
-	string a;
-	string b;
-	int c;
-	//Cow betsy;
-
-	a = "bees";
-	b = "queues";
-	c = 1;
-	if(a == b)
+	Cow[] a;
+	int i;
+	a = NewArray(5,Cow);
+	for(i = 0; i < 5; i = i + 1)
 	{
-		Print(a);
+		a[i] = New(Cow);
 	}
-	//betsy = New(Cow);
-	//betsy.initCow();
-	//sasha.initCow();
-	//betsy.setSpots(a);
-	//Print(betsy.getSpots());
-	//Print(betsy.geneticSpots());
+	for(i = 0; i < 5; i = i + 1)
+	{
+		a[i].setPie(i);
+	}
+	for(i = 0; i < 5; i = i + 1)
+	{
+		Print(a[i].getPie());
+	}
 
-	/*c = a * b + c;
-	boscoe = NewArray(10, int);
-	boscoe[1] = boscoe[1] + v(a,b,c);
-	return v(a,b,c);*/
+
 }
-
-/*int v(int a, int b, int c)
-{
-	int[] arr;
-	
-	int d;
-	int e;
-	int f;
-	boscoe = NewArray(3, int);
-	arr = NewArray(3,int);
-	arr[0] = arr[1] + arr[2] + arr[0];
-	f = 2 + e;
-	e = 3 + 4 + d + c;
-	if(a == 2)
-	{
-		int y;
-		int z;
-		y = 2;
-		z = 2;
-		return y;
-		return z;
-	}
-	return c;
-}*/
 
