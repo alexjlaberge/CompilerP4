@@ -105,18 +105,14 @@ int ClassDecl::getNumVars()
         {
             start = ((ClassDecl*)p)->getNumVars();
         }
-        else
-            start = 0;
     }
-    else
+
+    for(int i = 0; i < members->NumElements(); i++)
     {
-        for(int i = 0; i < members->NumElements(); i++)
-        {
-            if(dynamic_cast<VarDecl*>(members->Nth(i)))
-            {
-                start++;
-            }
-        }
+	    if(dynamic_cast<VarDecl*>(members->Nth(i)))
+	    {
+		    start++;
+	    }
     }
     return start;
 }

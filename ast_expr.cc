@@ -338,7 +338,9 @@ void ArrayAccess::Emit() {
 void NewExpr::Emit() {
         //Gen Location for named type
         Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
-        Location *classSize = codegen.GenLoadConstant(cType->getSize());
+	ClassDecl *classDecl = dynamic_cast<ClassDecl*>(FindDecl(cType->GetId()));
+	assert(classDecl);
+        Location *classSize = codegen.GenLoadConstant((classDecl->getNumVars() + 1) * 4);
         loc = codegen.GenBuiltInCall(Alloc, classSize, nullptr);
         Location *tmp = codegen.GenTempVariable();
         codegen.GenAssign(tmp, className);
