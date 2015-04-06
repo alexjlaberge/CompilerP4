@@ -439,9 +439,6 @@ void Call::Emit() {
             NamedType* q = (NamedType*)base->CheckAndComputeResultType();
             ClassDecl* classDecl = (ClassDecl*)FindDecl(q->GetId());
 
-	    cerr << "Got type " << q->GetId()->GetName() << " ";
-	    cerr << "when calling " << field->GetName() << endl;
-
             assert(classDecl != NULL);
             char* name = (char*)malloc(50);
             sprintf(name, "_%s.%s", classDecl->GetClassName(), field->GetName());
