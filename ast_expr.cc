@@ -300,6 +300,12 @@ void StringConstant::Emit() {
 
 void ArrayAccess::Emit() {
         base->Emit();
+
+        if (dynamic_cast<ArrayAccess*>(base) != nullptr)
+        {
+                base->loc = codegen.GenLoad(base->loc);
+        }
+
         subscript->Emit();
 
         Location *elem = subscript->loc;
@@ -378,12 +384,17 @@ void Call::Emit() {
          * 2. Generate a function call instruction
          * 3. Put the return value in the temporary variable
          */
+	for(int i = 0; i < actuals->NumElements(); i++)
+	{
+		actuals->Nth(i)->Emit();
+		if (dynamic_cast<ArrayAccess*>(actuals->Nth(i)))
+		{
+			actuals->Nth(i)->loc = codegen.GenLoad(actuals->Nth(i)->loc);
+		}
+	}
+
         if(base == nullptr)
         {
-            for(int i = 0; i < actuals->NumElements(); i++)
-            {
-                actuals->Nth(i)->Emit();
-            }
             for(int i = (actuals->NumElements() - 1); i >= 0; i--)
             {
                 codegen.GenPushParam(actuals->Nth(i)->loc);
@@ -406,10 +417,6 @@ void Call::Emit() {
         {
             //Calculate func offset
             int offset = 0;
-            for(int i = 0; i < actuals->NumElements(); i++)
-            {
-                actuals->Nth(i)->Emit();
-            }
             field->Emit();
             base->Emit();
             //Load the base
