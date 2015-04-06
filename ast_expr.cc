@@ -406,19 +406,33 @@ void Call::Emit() {
         {
             //Calculate func offset
             int offset = 0;
-            field->Emit();
-            base->Emit();
-            //Load the base
-            Location *tmp = new Location(fpRelative, 0, field->GetName());
-            Location *classLocation = codegen.GenLoad(tmp, offset);
-            //Load from base + offset
-            Location *fnLocation = codegen.GenLoad(classLocation, offset);
-            //Set loc to be the call
-
             for(int i = 0; i < actuals->NumElements(); i++)
             {
                 actuals->Nth(i)->Emit();
             }
+            field->Emit();
+            base->Emit();
+            //Load the base
+            Location *tmp = new Location(fpRelative, 0, field->GetName());
+            Location *classLocation = codegen.GenLoad(base->loc, 0);
+            NamedType* q = (NamedType*)base->CheckAndComputeResultType();
+            ClassDecl* classDecl = (ClassDecl*)FindDecl(q->GetId());
+            char* name = (char*)malloc(50);
+            sprintf(name, "_%s.%s", classDecl->GetClassName(), field->GetName());
+            List<const char*>* myVTable = classDecl->vTable;
+            int curr;
+            for(int i = 0; i < myVTable->NumElements(); i++)
+            {
+                if(!strcmp(name, myVTable->Nth(i)))
+                {
+                    curr = i;
+                }
+            }
+            curr = curr * 4;
+            //Load from base + offset
+            Location *fnLocation = codegen.GenLoad(classLocation, curr);
+            //Set loc to be the call
+
             for(int i = actuals->NumElements()-1; i >= 0; i--)
             {
                 codegen.GenPushParam(actuals->Nth(i)->loc);

@@ -74,9 +74,9 @@ class ClassDecl : public Decl
     List<InterfaceDecl*> *convImp;
     // NamedType matching with conv
     List<NamedType*> *interfaceDecl_to_namedType;
-    List<const char*> *vTable;
-
+    
   public:
+    List<const char*> *vTable;
     ClassDecl(Identifier *name, NamedType *extends, 
               List<NamedType*> *implements, List<Decl*> *members);
     void Check();

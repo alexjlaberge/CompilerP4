@@ -1,55 +1,21 @@
-class Cow extends Animal
-{
-	int b;
-	void setNum(int p)
-	{
-		a = p;
-		b = p;
-	}
-	int getNum()
-	{
-		return a;
-		return b;
-	}
-}
-
-class Animal
+class A
 {
 	int a;
-	int q;
-	int c;
-	int k;
-	int getPie()
+	int getA()
 	{
-		return k;
+		return a;
 	}
-	void setPie(int a)
+	void setA(int p)
 	{
-		this.a = a;
+		a = p;
 	}
 }
 
 int main()
 {
-	Cow[] a;
-	int i;
-	a = NewArray(5,Cow);
-	for(i = 0; i < 5; i = i + 1)
-	{
-		a[i] = New(Cow);
-	}
-	for(i = 0; i < 5; i = i + 1)
-	{
-		a[i].setNum(i);
-		a[i].getNum();
-		a[i].setPie(i);
-		a[i].getPie();
-	}
-	for(i = 0; i < 5; i = i + 1)
-	{
-		Print(a[i].getPie());
-	}
-
-
+	A a;
+	//a = New(A);
+	a.setA(1);
+	//return a.getA();
 }
 
