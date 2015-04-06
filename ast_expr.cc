@@ -133,7 +133,7 @@ Type* This::CheckAndComputeResultType() {
 }
 
 void This::Emit() {
-        loc = new Location(fpRelative, 0, "this");
+        loc = new Location(fpRelative, 4, "this");
 }
   
 ArrayAccess::ArrayAccess(yyltype loc, Expr *b, Expr *s) : LValue(loc) {
@@ -337,13 +337,15 @@ void ArrayAccess::Emit() {
 
 void NewExpr::Emit() {
         //Gen Location for named type
-        Location *className = new Location(gpRelative, 0, cType->GetId()->GetName());
+        //Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
+        //Location *className = codegen.GenLoadLabel(cType->GetId()->GetName());
 	ClassDecl *classDecl = dynamic_cast<ClassDecl*>(FindDecl(cType->GetId()));
 	assert(classDecl);
         Location *classSize = codegen.GenLoadConstant((classDecl->getNumVars() + 1) * 4);
         loc = codegen.GenBuiltInCall(Alloc, classSize, nullptr);
-        Location *tmp = codegen.GenTempVariable();
-        codegen.GenAssign(tmp, className);
+        //Location *tmp = codegen.GenTempVariable();
+        //codegen.GenAssign(tmp, className);
+        Location *tmp = codegen.GenLoadLabel(cType->GetId()->GetName());
         codegen.GenStore(loc, tmp);
 
 }
