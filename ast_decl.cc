@@ -68,8 +68,10 @@ List<const char*>* ClassDecl::getVTable()
             }
         }
     }
+
     int curr = myVTable->NumElements();
     curr = curr * 4;
+
     for(int i = 0; i < members->NumElements(); i++)
     {
         Decl* c = members->Nth(i);
@@ -95,7 +97,8 @@ List<const char*>* ClassDecl::getVTable()
 			if (strcmp(vtable_func, func) == 0)
 			{
 				myVTable->RemoveAt(j);
-				j = myVTable->NumElements();
+				myVTable->InsertAt(a, j);
+				j = myVTable->NumElements() - 1;
 				break;
 			}
 		}
