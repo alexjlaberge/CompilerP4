@@ -417,6 +417,7 @@ void Call::Emit() {
             Location *classLocation = codegen.GenLoad(base->loc, 0);
             NamedType* q = (NamedType*)base->CheckAndComputeResultType();
             ClassDecl* classDecl = (ClassDecl*)FindDecl(q->GetId());
+            assert(classDecl != NULL);
             char* name = (char*)malloc(50);
             sprintf(name, "_%s.%s", classDecl->GetClassName(), field->GetName());
             List<const char*>* myVTable = classDecl->vTable;

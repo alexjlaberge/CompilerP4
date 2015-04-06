@@ -89,6 +89,7 @@ class ClassDecl : public Decl
     const char *GetClassName() { return id->GetName(); }
     virtual void Emit();
     List<const char*>* getVTable();
+    int getNumVars();
 
     int getSize()
     {

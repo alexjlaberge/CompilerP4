@@ -1,8 +1,19 @@
-class A
+class B
 {
+	int h;
+	int k;
+	int l;
+}
+
+class A extends B
+{
+	int b;
+	int g;
 	int a;
 	int getA()
 	{
+		return b;
+		return g;
 		return a;
 	}
 	void setA(int p)
@@ -14,8 +25,6 @@ class A
 int main()
 {
 	A a;
-	//a = New(A);
 	a.setA(1);
-	//return a.getA();
 }
 

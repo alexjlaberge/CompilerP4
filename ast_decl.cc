@@ -95,9 +95,45 @@ List<const char*>* ClassDecl::getVTable()
 
 }
 
+int ClassDecl::getNumVars()
+{
+    int start = 0;
+    if(extends != nullptr)
+    {
+        Decl* p = FindDecl(extends->GetId());
+        if(dynamic_cast<ClassDecl*>(p))
+        {
+            start = ((ClassDecl*)p)->getNumVars();
+        }
+        else
+            start = 0;
+    }
+    else
+    {
+        for(int i = 0; i < members->NumElements(); i++)
+        {
+            if(dynamic_cast<VarDecl*>(members->Nth(i)))
+            {
+                start++;
+            }
+        }
+    }
+    return start;
+}
+
 void ClassDecl::Check() {
     List<const char*>* tmpV = getVTable();
-    /*int curr = 4;
+    int curr = 0;
+    if(extends != nullptr)
+    {
+        Decl* p = FindDecl(extends->GetId());
+        if(dynamic_cast<ClassDecl*>(p))
+        {
+            curr = ((ClassDecl*)p)->getNumVars();
+        }
+    }
+    curr++;
+    curr = curr * 4;
     for(int i = 0; i < members->NumElements(); i++)
     {
         if(dynamic_cast<VarDecl*>(members->Nth(i)))
@@ -105,7 +141,7 @@ void ClassDecl::Check() {
             ((VarDecl*)members->Nth(i))->offset = curr;
             curr += 4;
         }
-    }*/
+    }
 
     ClassDecl *ext = extends ? dynamic_cast<ClassDecl*>(parent->FindDecl(extends->GetId())) : NULL; 
     if (extends && !ext) {
