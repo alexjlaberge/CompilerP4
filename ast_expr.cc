@@ -337,7 +337,7 @@ void ArrayAccess::Emit() {
 
 void NewExpr::Emit() {
         //Gen Location for named type
-        Location *className = new Location(fpRelative, 0, cType->GetId()->GetName());
+        Location *className = new Location(gpRelative, 0, cType->GetId()->GetName());
 	ClassDecl *classDecl = dynamic_cast<ClassDecl*>(FindDecl(cType->GetId()));
 	assert(classDecl);
         Location *classSize = codegen.GenLoadConstant((classDecl->getNumVars() + 1) * 4);
@@ -490,7 +490,10 @@ void FieldAccess::Emit() {
         }
         else
         {
-                VarDecl *var = dynamic_cast<VarDecl*>(FindDecl(field));
+		Decl *heyo = field->GetDeclRelativeToBase(
+				base->CheckAndComputeResultType());
+		VarDecl *var = dynamic_cast<VarDecl*>(heyo);
+                //VarDecl *var = dynamic_cast<VarDecl*>(FindDecl(field));
                 assert(var);
             offset = var->offset;
             base->Emit();
