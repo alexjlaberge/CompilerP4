@@ -124,6 +124,7 @@ void Program::Emit() {
         if (!mainDefined)
         {
                 ReportError::NoMainFound();
+		return;
         }
 
         for(int i = 0; i < decls->NumElements(); i++)
