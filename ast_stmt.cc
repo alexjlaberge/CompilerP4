@@ -272,6 +272,10 @@ void ReturnStmt::Emit() {
             Location *tmpThis = new Location(fpRelative, 0, "this");
             expr->loc = codegen.GenLoad(tmpThis, offset);
         }*/
+	if (dynamic_cast<ArrayAccess*>(expr))
+	{
+		expr->loc = codegen.GenLoad(expr->loc);
+	}
         codegen.GenReturn(expr->loc);
 }
 
