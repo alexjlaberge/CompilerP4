@@ -430,7 +430,7 @@ void Call::Emit() {
             char* name = (char*)malloc(50);
             sprintf(name, "_%s.%s", classDecl->GetClassName(), field->GetName());
             List<const char*>* myVTable = classDecl->vTable;
-            int curr;
+            int curr = 0;
             for(int i = 0; i < myVTable->NumElements(); i++)
             {
                 if(!strcmp(name, myVTable->Nth(i)))
