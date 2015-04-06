@@ -86,7 +86,23 @@ List<const char*>* ClassDecl::getVTable()
                 //printf("%s",a);
 
                 //m->Append(a);
-            myVTable->Append(a);
+
+		char *func = strdup(members->Nth(i)->GetName());
+		int j = 0;
+		for (j = 0; j < myVTable->NumElements(); j++)
+		{
+			const char *vtable_func = strstr(myVTable->Nth(j), ".") + 1;
+			if (strcmp(vtable_func, func) == 0)
+			{
+				myVTable->RemoveAt(j);
+				j = myVTable->NumElements();
+				break;
+			}
+		}
+		if (j == myVTable->NumElements())
+		{
+			myVTable->Append(a);
+		}
 
         }
     }
