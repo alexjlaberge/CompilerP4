@@ -299,6 +299,7 @@ void StringConstant::Emit() {
 }
 
 void ArrayAccess::Emit() {
+        base->Emit();
         subscript->Emit();
 
         Location *elem = subscript->loc;
@@ -307,7 +308,6 @@ void ArrayAccess::Emit() {
                 elem = codegen.GenLoad(elem);
         }
 
-        base->Emit();
         Location *zero = codegen.GenLoadConstant(0);
         Location *check1 = codegen.GenBinaryOp("<", elem, zero);
         Location *size = codegen.GenLoad(base->loc, -4);
