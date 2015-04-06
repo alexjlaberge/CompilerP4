@@ -421,6 +421,10 @@ void Call::Emit() {
             int offset = 0;
             field->Emit();
             base->Emit();
+	    if (dynamic_cast<ArrayAccess*>(base) != nullptr)
+	    {
+		    base->loc = codegen.GenLoad(base->loc);
+	    }
             //Load the base
             Location *tmp = new Location(fpRelative, 0, field->GetName());
             Location *classLocation = codegen.GenLoad(base->loc, 0);
