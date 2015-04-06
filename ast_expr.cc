@@ -657,7 +657,7 @@ void RelationalExpr::Emit() {
         if(!strcmp(op->getChar(), ">="))
         {
             Location *loc1 = codegen.GenBinaryOp("<", right->loc, left->loc);
-            Location *loc2 = codegen.GenBinaryOp("==", left->loc, right->loc);
+            Location *loc2 = codegen.GenBinaryOp("==", right->loc, left->loc);
             loc = codegen.GenBinaryOp("||", loc1, loc2);
         }
         else if(!strcmp(op->getChar(), "<="))
