@@ -425,11 +425,23 @@ void Call::Emit() {
 	    {
 		    base->loc = codegen.GenLoad(base->loc);
 	    }
+
+	    if (dynamic_cast<ArrayType*>(base->CheckAndComputeResultType()) &&
+			    strcmp(field->GetName(), "length") == 0)
+	    {
+		    loc = codegen.GenLoad(base->loc, -4);
+		    return;
+	    }
+
             //Load the base
             Location *tmp = new Location(fpRelative, 0, field->GetName());
             Location *classLocation = codegen.GenLoad(base->loc, 0);
             NamedType* q = (NamedType*)base->CheckAndComputeResultType();
             ClassDecl* classDecl = (ClassDecl*)FindDecl(q->GetId());
+
+	    cerr << "Got type " << q->GetId()->GetName() << " ";
+	    cerr << "when calling " << field->GetName() << endl;
+
             assert(classDecl != NULL);
             char* name = (char*)malloc(50);
             sprintf(name, "_%s.%s", classDecl->GetClassName(), field->GetName());
